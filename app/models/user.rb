@@ -25,4 +25,6 @@ class User < ApplicationRecord
 
   has_many :folders, dependent: :destroy
   has_many :stored_files, dependent: :destroy
+  has_many :stored_files, dependent: :destroy
+
 end
