@@ -2,6 +2,9 @@
 
 <h2>Files</h2>
 
+<%= link_to "Upload File", new_stored_file_path(folder_id: @folder.id) %>
+
+
 <ul>
   <% @files.each do |file| %>
     <li><%= file.file_name %></li>
