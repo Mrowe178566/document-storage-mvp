@@ -19,6 +19,6 @@
 class Folder < ApplicationRecord
   belongs_to :user
   has_many :stored_files, dependent: :destroy
-  
   validates :name, presence: true
+  has_many :stored_files, dependent: :destroy
 end
