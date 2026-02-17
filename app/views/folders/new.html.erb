@@ -1,0 +1,11 @@
+<h1>New Folder</h1>
+
+<%= form_with model: @folder do |form| %>
+  <div>
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+  </div>
+
+  <%= form.submit "Create Folder" %>
+<% end %>
+
