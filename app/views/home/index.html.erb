@@ -1,2 +1,50 @@
-<h1>File Vault-MVP</h1>
-<p>Welcome To My App</p>
+<main class="container mt-5">
+  <section class="text-center" style="max-width: 600px; margin: 0 auto;">
+    
+    <!-- Logo-style circle -->
+    <div class="mb-4">
+      <div style="
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        background-color: #e8f0fe;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+      ">
+        <span style="font-size: 32px; color: #1a73e8;">📁</span>
+      </div>
+    </div>
+
+    <h1 class="mb-3" style="font-weight: 600; color: #1a73e8;">
+      File Vault
+    </h1>
+
+    <p class="lead mb-4" style="color: #5f6368;">
+      Simple, secure storage for your files and folders — all in one place.
+    </p>
+
+    <% if user_signed_in? %>
+      <!-- Neutral Dashboard button -->
+      <a href="<%= folders_path %>" role="button" class="contrast outline me-2">
+        Go to Dashboard
+      </a>
+
+      <!-- Neutral Sign Out button -->
+      <%= button_to "Sign Out", destroy_user_session_path, method: :delete, class: "contrast outline", style: "margin-top: 10px;" %>
+
+    <% else %>
+      <!-- Neutral Sign In -->
+      <a href="<%= new_user_session_path %>" role="button" class="contrast outline me-2">
+        Sign In
+      </a>
+
+      <!-- Neutral Sign Up -->
+      <a href="<%= new_user_registration_path %>" role="button" class="contrast outline">
+        Sign Up
+      </a>
+    <% end %>
+
+  </section>
+</main>
