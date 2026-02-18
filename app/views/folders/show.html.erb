@@ -5,8 +5,21 @@
 <%= link_to "Upload File", new_stored_file_path(folder_id: @folder.id) %>
 
 
-<ul>
-  <% @files.each do |file| %>
-    <li><%= file.file_name %></li>
-  <% end %>
-</ul>
+<% @folder.stored_files.each do |file| %>
+  <article class="mb-3">
+    <h4>
+      <% if file.uploaded_file.attached? %>
+        <%= file.uploaded_file.filename %>
+      <% else %>
+        <%= file.file_name %>
+      <% end %>
+    </h4>
+
+    <% if file.uploaded_file.attached? %>
+      <p>
+        <%= link_to "Download", rails_blob_path(file.uploaded_file, disposition: "attachment") %>
+      </p>
+    <% end %>
+  </article>
+<% end %>
+

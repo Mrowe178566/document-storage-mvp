@@ -1,12 +1,12 @@
-<h1>Upload File</h1>
+<%= form_with model: @stored_file, multipart: true do |form| %>
 
-<%= form_with model: @stored_file, url: stored_files_path do |form| %>
   <%= form.hidden_field :folder_id, value: @folder.id %>
 
-  <div>
-    <%= form.label :file_name %>
-    <%= form.text_field :file_name %>
+  <div class="mb-3">
+    <%= form.label :uploaded_file, "Choose a file" %>
+    <%= form.file_field :uploaded_file %>
   </div>
 
-  <%= form.submit "Upload" %>
+  <%= form.submit "Upload", class: "contrast outline" %>
+
 <% end %>
