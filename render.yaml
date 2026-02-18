@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: my-app-name # the name of this service, you should change this
+    name: document-storage-mvp # the name of this service, you should change this
     runtime: ruby # this app is written in ruby
     plan: free # make sure to set this to free or you'll get billed $$$
     buildCommand: "./bin/render-build.sh" # we already created these two files for you
@@ -21,3 +21,10 @@ services:
         value: "true" # Run background jobs in same process
       - key: BUNDLE_WITHOUT
         value: "development:test" # Don't install dev/test gems in production
+      # Cloudinary (Active Storage)
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
