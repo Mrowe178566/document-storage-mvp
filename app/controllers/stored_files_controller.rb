@@ -21,6 +21,6 @@ class StoredFilesController < ApplicationController
   private
 
   def stored_file_params
-    params.require(:stored_file).permit(:file_name)
+    params.require(:stored_file).permit(:folder_id, :uploaded_file)
   end
 end
