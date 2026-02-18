@@ -10,19 +10,42 @@
 
     <%= yield :head %>
 
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
-
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <!-- The official Pico CSS stylesheet -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.conditional.css">
+
+    <!-- The official Bootstrap utilities stylesheet -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/twbs/bootstrap@main/dist/css/bootstrap-utilities.css">
+
+    <!-- Our modifications to default Pico CSS styles -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/firstdraft/pico.firstdraft.css@latest/pico.firstdraft.css">
+
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
   <body>
+
+    <!-- Global Navigation -->
+    <nav class="container mt-3">
+      <% if user_signed_in? %>
+        <%= link_to "Dashboard", folders_path, class: "contrast outline me-2" %>
+        <%= button_to "Sign Out", destroy_user_session_path, method: :delete, class: "contrast outline" %>
+      <% else %>
+        <%= link_to "Sign In", new_user_session_path, class: "contrast outline me-2" %>
+        <%= link_to "Sign Up", new_user_registration_path, class: "contrast outline" %>
+      <% end %>
+    </nav>
+
     <%= yield %>
+
+    <!-- Global Footer -->
+    <footer class="container mt-5 py-4" style="text-align: center; color: #5f6368; font-size: 0.9rem;">
+      <p>© AppDev 2026</p>
+    </footer>
+
   </body>
 </html>
