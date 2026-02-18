@@ -1,2 +1,21 @@
-<h1>File Vault-MVP</h1>
-<p>Welcome To My App</p>
+<section class="container" style="margin-top: 6rem; text-align: center;">
+
+  <h1 style="font-weight: 600; margin-bottom: 1rem;">
+    Your Document Organizer
+  </h1>
+
+  <p style="color: #5f6368; font-size: 1.1rem; max-width: 600px; margin: 0 auto 2rem;">
+    A simple, secure place to store your files and keep everything organized.
+    Built with clarity, usability, and AppDev 2026 professionalism.
+  </p>
+
+  <% if user_signed_in? %>
+    <%= link_to "Go to Dashboard", folders_path, class: "contrast outline", style: "padding: 0.8rem 1.4rem; font-size: 1.1rem;" %>
+  <% else %>
+    <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 2rem;">
+      <%= link_to "Sign In", new_user_session_path, class: "contrast outline", style: "padding: 0.8rem 1.4rem; font-size: 1.1rem;" %>
+      <%= link_to "Sign Up", new_user_registration_path, class: "contrast outline", style: "padding: 0.8rem 1.4rem; font-size: 1.1rem;" %>
+    </div>
+  <% end %>
+
+</section>
