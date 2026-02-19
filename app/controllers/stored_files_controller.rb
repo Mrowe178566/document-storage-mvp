@@ -10,10 +10,12 @@ class StoredFilesController < ApplicationController
     @folder = current_user.folders.find(params[:stored_file][:folder_id])
     @stored_file = @folder.stored_files.build(stored_file_params)
     @stored_file.user = current_user
+    @stored_file.file_name = params.dig("stored_file", "uploaded_file")&.original_filename
 
     if @stored_file.save
       redirect_to folder_path(@folder), notice: "File uploaded successfully."
     else
+      flash[:alert] = @stored_file.errors.full_messages.to_sentence
       render :new
     end
   end
