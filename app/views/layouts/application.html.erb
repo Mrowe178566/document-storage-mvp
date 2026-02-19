@@ -40,6 +40,8 @@
       <% end %>
     </nav>
 
+    <%= render "shared/breadcrumbs" if breadcrumbs.any? %>
+
     <div class="container mt-3">
       <%= render "shared/flash" %>
     </div>

@@ -3,11 +3,14 @@ class FoldersController < ApplicationController
 
   def index
     @folders = current_user.folders
+    add_breadcrumb "Folders", folders_path
   end
 
   def show
     @folder = current_user.folders.find(params[:id])
     @files = @folder.stored_files
+    add_breadcrumb "Folders", folders_path
+    add_breadcrumb @folder.name
   end
 
   def new

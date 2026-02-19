@@ -1,0 +1,18 @@
+<nav aria-label="Breadcrumb" style="margin-bottom: 1rem;">
+  <ol style="list-style: none; padding: 0; display: flex; gap: 6px; font-size: 0.9rem;">
+    
+    <% breadcrumbs.each_with_index do |crumb, index| %>
+      <% if index < breadcrumbs.length - 1 %>
+        <li>
+          <%= link_to crumb[:name], crumb[:path], style: "text-decoration: none; color: #555;" %>
+          <span style="color: #999;">›</span>
+        </li>
+      <% else %>
+        <li style="color: #000; font-weight: 600;">
+          <%= crumb[:name] %>
+        </li>
+      <% end %>
+    <% end %>
+
+  </ol>
+</nav>
