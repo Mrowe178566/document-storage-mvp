@@ -20,6 +20,12 @@ class StoredFilesController < ApplicationController
     end
   end
 
+  def destroy
+    @stored_file = current_user.stored_files.find(params[:id])
+    @stored_file.destroy
+    redirect_to folder_path(@stored_file.folder), notice: "File deleted successfully."
+  end
+
   private
 
   def stored_file_params
