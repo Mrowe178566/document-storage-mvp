@@ -3,10 +3,10 @@
   <%= form.hidden_field :folder_id, value: @folder.id %>
 
   <div class="mb-3">
-    <%= form.label :uploaded_file, "Choose a file" %>
-    <%= form.file_field :uploaded_file %>
+    <%= form.label :uploaded_file, "Choose a file", class: "form-label" %>
+    <%= form.file_field :uploaded_file, class: "form-control" %>
   </div>
 
-  <%= form.submit "Upload", class: "contrast outline" %>
+  <%= form.submit "Upload", class: "btn btn-primary w-100" %>
 
 <% end %>

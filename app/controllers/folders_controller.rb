@@ -15,6 +15,8 @@ class FoldersController < ApplicationController
 
   def new
     @folder = Folder.new
+    add_breadcrumb "Folders", folders_path
+    add_breadcrumb "new"
   end
 
   def create

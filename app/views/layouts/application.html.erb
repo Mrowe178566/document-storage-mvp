@@ -17,8 +17,9 @@
     <!-- The official Pico CSS stylesheet -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.conditional.css">
 
-    <!-- The official Bootstrap utilities stylesheet -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/twbs/bootstrap@main/dist/css/bootstrap-utilities.css">
+    <!-- Bootstrap  -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 
     <!-- Our modifications to default Pico CSS styles -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/firstdraft/pico.firstdraft.css@latest/pico.firstdraft.css">
@@ -30,23 +31,53 @@
   <body>
 
     <!-- Global Navigation -->
-    <nav class="container mt-3">
-      <% if user_signed_in? %>
-        <%= link_to "Dashboard", folders_path, class: "contrast outline me-2" %>
-        <%= button_to "Sign Out", destroy_user_session_path, method: :delete, class: "contrast outline" %>
-      <% else %>
-        <%= link_to "Sign In", new_user_session_path, class: "contrast outline me-2" %>
-        <%= link_to "Sign Up", new_user_registration_path, class: "contrast outline" %>
-      <% end %>
-    </nav>
+    <nav style="
+      width: 100%;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #e5e5e5;
+      background: #fff;
+    ">
+      <div class="container" 
+       style="display: flex; justify-content: space-between; align-items: center;">
 
-    <%= render "shared/breadcrumbs" if breadcrumbs.any? %>
+        <% if user_signed_in? %>
+
+          <!-- Left side -->
+          <div>
+            <%= link_to "Dashboard", folders_path,
+              class: "contrast outline",
+              style: "padding: 0.4rem 1rem;" %>
+          </div>
+
+          <!-- Right side -->
+          <div>
+            <%= button_to "Sign Out", destroy_user_session_path, method: :delete,
+              class: "btn btn-outline-secondary",
+              style: "padding: 0.4rem 1rem;" %>
+          </div>
+
+        <% else %>
+
+          <!-- Right side when logged out -->
+          <div style="margin-left: auto; display: flex; gap: 10px;">
+            <%= link_to "Sign In", new_user_session_path, class: "contrast outline" %>
+            <%= link_to "Sign Up", new_user_registration_path, class: "contrast outline" %>
+          </div>
+
+        <% end %>
+
+      </div>
+    </nav>
 
     <div class="container mt-3">
       <%= render "shared/flash" %>
     </div>
 
-    <%= yield %>
+
+    <div class="container">
+      <%= render "shared/breadcrumbs" if breadcrumbs.any? %>
+      <%= yield %>
+    </div>
 
     <!-- Global Footer -->
     <footer class="container mt-5 py-4" style="text-align: center; color: #5f6368; font-size: 0.9rem;">

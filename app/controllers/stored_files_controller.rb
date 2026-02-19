@@ -4,6 +4,9 @@ class StoredFilesController < ApplicationController
   def new
     @folder = current_user.folders.find(params[:folder_id])
     @stored_file = StoredFile.new
+    add_breadcrumb "Folders", folders_path
+    add_breadcrumb @folder.name, folder_path(@folder)
+    add_breadcrumb "Upload New File"
   end
 
   def create
