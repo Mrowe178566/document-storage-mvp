@@ -26,6 +26,21 @@ class StoredFilesController < ApplicationController
     redirect_to folder_path(@stored_file.folder), notice: "File deleted successfully."
   end
 
+  def bulk_delete
+    file_ids = params[:file_ids]
+
+    if file_ids.present?
+      files = current_user.stored_files.where(id: file_ids)
+      folder = files.first.folder if files.any?
+
+      files.destroy_all
+
+      redirect_to folder_path(folder), notice: "Selected files deleted successfully."
+    else
+      redirect_back fallback_location: authenticated_root_path, alert: "No files selected."
+    end
+  end
+
   private
 
   def stored_file_params

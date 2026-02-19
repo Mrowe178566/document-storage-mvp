@@ -1,31 +1,54 @@
-<h1><%= @folder.name %></h1>
+<h2><%= @folder.name %></h2>
 
-<h2>Files</h2>
+<hr>
 
-<%= link_to "Upload File", new_stored_file_path(folder_id: @folder.id) %>
+<%= form_with url: bulk_delete_stored_files_path, method: :delete do %>
 
+  <!-- Select All Checkbox -->
+  <div style="margin-bottom: 12px;">
+    <label>
+      <%= check_box_tag "select_all", "", false, id: "select_all" %>
+      Select All
+    </label>
+  </div>
 
-<% @folder.stored_files.each do |file| %>
-  <article class="mb-3">
-    <h4>
+  <% @folder.stored_files.each do |file| %>
+    <article class="mb-3" style="padding: 10px; border-bottom: 1px solid #ddd;">
+
+      <%= check_box_tag "file_ids[]", file.id, false, class: "file-checkbox" %>
+
+      <strong style="margin-left: 8px;">
+        <% if file.uploaded_file.attached? %>
+          <%= file.uploaded_file.filename %>
+        <% else %>
+          <%= file.file_name %>
+        <% end %>
+      </strong>
+
       <% if file.uploaded_file.attached? %>
-        <%= file.uploaded_file.filename %>
-      <% else %>
-        <%= file.file_name %>
+        <div>
+          <%= link_to "Download", rails_blob_path(file.uploaded_file, disposition: "attachment") %>
+        </div>
       <% end %>
-    </h4>
 
-    <% if file.uploaded_file.attached? %>
-      <p>
-        <%= link_to "Download", rails_blob_path(file.uploaded_file, disposition: "attachment") %>
-      </p>
-    <% end %>
+    </article>
+  <% end %>
 
-    <%= button_to "Delete",
-      stored_file_path(file),
-      method: :delete,
-      data: { turbo_confirm: "Are you sure you want to delete this file?" },
-      class: "contrast outline" %>
+  <%= submit_tag "Delete Selected", class: "contrast outline", style: "margin-top: 20px;" %>
 
-  </article>
 <% end %>
+
+<hr>
+
+<%= link_to "Upload New File", new_stored_file_path(folder_id: @folder.id), class: "button" %>
+
+<script>
+  document.addEventListener("turbo:load", () => {
+    const selectAll = document.getElementById("select_all");
+    const checkboxes = document.querySelectorAll(".file-checkbox");
+
+    selectAll.addEventListener("change", () => {
+      checkboxes.forEach(cb => cb.checked = selectAll.checked);
+    });
+  });
+</script>
