@@ -28,7 +28,6 @@
   </head>
 
   <body>
-    <%= render "shared/flash" %>
 
     <!-- Global Navigation -->
     <nav class="container mt-3">
@@ -40,6 +39,10 @@
         <%= link_to "Sign Up", new_user_registration_path, class: "contrast outline" %>
       <% end %>
     </nav>
+
+    <div class="container mt-3">
+      <%= render "shared/flash" %>
+    </div>
 
     <%= yield %>
 
