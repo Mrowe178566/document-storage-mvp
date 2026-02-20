@@ -1,0 +1,37 @@
+   <nav style="
+      width: 100%;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #e5e5e5;
+      background: #fff;
+    ">
+      <div class="container" 
+       style="display: flex; justify-content: space-between; align-items: center;">
+
+        <% if user_signed_in? %>
+
+          <!-- Left side -->
+          <div>
+            <%= link_to "Dashboard", folders_path,
+              class: "contrast outline",
+              style: "padding: 0.4rem 1rem;" %>
+          </div>
+
+          <!-- Right side -->
+          <div>
+            <%= button_to "Sign Out", destroy_user_session_path, method: :delete,
+              class: "btn btn-outline-secondary",
+              style: "padding: 0.4rem 1rem;" %>
+          </div>
+
+        <% else %>
+
+          <!-- Right side when logged out -->
+          <div style="margin-left: auto; display: flex; gap: 10px;">
+            <%= link_to "Sign In", new_user_session_path, class: "contrast outline" %>
+            <%= link_to "Sign Up", new_user_registration_path, class: "contrast outline" %>
+          </div>
+
+        <% end %>
+
+      </div>
+    </nav>
