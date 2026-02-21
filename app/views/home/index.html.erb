@@ -1,28 +1,29 @@
 <div class="container py-5">
-  <div class="row align-items-center">
-    
-    <div class="col-md-6">
-      <h1 class="display-4 fw-bold mb-3">
+  <div class="row align-items-center justify-content-between">
+
+    <!-- LEFT SIDE TEXT -->
+    <div class="col-md-6 mb-5 mb-md-0">
+      <h1 class="display-4 fw-bold mb-3 fade-in-up">
         Organize Your Files With Ease
       </h1>
 
-      <p class="lead mb-4">
+      <p class="lead mb-4 fade-in-up" style="animation-delay: 0.15s;">
         File Vault helps you securely store, organize, and access your files from anywhere.
         Simple. Fast. Reliable.
       </p>
 
-      <div class="d-flex gap-3">
-        <%= link_to "Get Started", new_user_registration_path, class: "btn btn-primary btn-lg" %>
-        <%= link_to "Sign In", new_user_session_path, class: "btn btn-outline-secondary btn-lg" %>
+      <div class="d-flex gap-3 fade-in-up" style="animation-delay: 0.3s;">
+        <%= link_to "Get Started", new_user_registration_path, class: "btn btn-primary btn-lg px-4" %>
+        <%= link_to "Sign In", new_user_session_path, class: "btn btn-outline-secondary btn-lg px-4" %>
       </div>
     </div>
 
-    <div class="col-md-6 text-center mt-4 mt-md-0">
-      <img 
-        src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" 
-        alt="File storage illustration" 
-        class="img-fluid" 
-        style="max-width: 350px;">
+    <!-- RIGHT SIDE LOGO -->
+    <div class="col-md-5 text-center fade-in-up" style="animation-delay: 0.45s;">
+      <%= image_tag "vault-logo.png",
+          alt: "File Vault Logo",
+          class: "img-fluid",
+          style: "max-width: 480px;" %>
     </div>
 
   </div>

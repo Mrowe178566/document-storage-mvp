@@ -1,74 +1,43 @@
-<h2><%= @folder.name %></h2>
+<nav class="navbar navbar-expand-lg navbar-light bg-light" role="navigation">
+  <div class="container d-flex justify-content-between align-items-center">
 
-<hr>
+    <!-- Brand: Logo + Name -->
+    <div class="d-flex align-items-center gap-2">
+      <img 
+        src="/vault-logo.png" 
+        alt="File Vault Logo" 
+        style="height: 32px; width: 32px;"
+      >
+      <span class="navbar-brand fw-bold" style="font-size: 1.25rem;">
+        File Vault
+      </span>
+    </div>
 
-<%= form_with url: bulk_delete_stored_files_path, method: :delete do %>
+    <% if user_signed_in? %>
 
-  <!-- Select All Checkbox -->
-  <div style="margin-bottom: 12px;">
-    <label>
-      <%= check_box_tag "select_all", "", false, id: "select_all" %>
-      Select All
-    </label>
-  </div>
-
-  <div class="row g-4">
-    <% @folder.stored_files.each do |file| %>
-      <div class="col-md-4">
-        <div class="card shadow-sm h-100 p-3">
-
-          <!-- Checkbox -->
-          <div class="form-check mb-2">
-            <%= check_box_tag "file_ids[]", file.id, false, class: "form-check-input file-checkbox", id: "file_#{file.id}" %>
-            <label class="form-check-label" for="file_<%= file.id %>">
-              Select
-            </label>
-          </div>
-
-          <!-- File Icon + Name -->
-          <div class="d-flex align-items-center mb-2">
-            <i class="bi bi-file-earmark-text text-primary me-3" style="font-size: 2rem;"></i>
-
-            <div>
-              <strong>
-                <% if file.uploaded_file.attached? %>
-                  <%= file.uploaded_file.filename %>
-                <% else %>
-                  <%= file.file_name %>
-                <% end %>
-              </strong>
-
-              <p class="text-muted small mb-0">
-                Uploaded <%= time_ago_in_words(file.created_at) %> ago
-              </p>
-            </div>
-          </div>
-
-          <!-- Download Link -->
-          <% if file.uploaded_file.attached? %>
-            <%= link_to "Download", rails_blob_path(file.uploaded_file, disposition: "attachment"), class: "btn btn-outline-primary btn-sm mt-2" %>
-          <% end %>
-
-        </div>
+      <!-- Left side -->
+      <div>
+        <%= link_to "Dashboard", folders_path,
+                class: "contrast outline",
+                style: "padding: 0.4rem 1rem;" %>
       </div>
+
+      <!-- Right side -->
+      <div>
+        <%= button_to "Sign Out", destroy_user_session_path, method: :delete,
+                class: "btn btn-outline-secondary",
+                style: "padding: 0.4rem 1rem;" %>
+      </div>
+
+    <% else %>
+
+      <!-- Right side when logged out -->
+      <div class="ms-auto d-flex gap-2">
+        <%= link_to "Sign In", new_user_session_path, class: "contrast outline" %>
+        <%= link_to "Sign Up", new_user_registration_path, class: "contrast outline" %>
+      </div>
+
     <% end %>
+
   </div>
-
-  <%= submit_tag "Delete Selected", class: "contrast outline", style: "margin-top: 20px;" %>
-
-<% end %>
-
-<hr>
-
-<%= link_to "Upload New File", new_stored_file_path(folder_id: @folder.id), class: "button" %>
-
-<script>
-  document.addEventListener("turbo:load", () => {
-    const selectAll = document.getElementById("select_all");
-    const checkboxes = document.querySelectorAll(".file-checkbox");
-
-    selectAll.addEventListener("change", () => {
-      checkboxes.forEach(cb => cb.checked = selectAll.checked);
-    });
-  });
-</script>
+</nav>
