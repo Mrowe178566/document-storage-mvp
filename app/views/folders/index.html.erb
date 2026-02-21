@@ -1,10 +1,22 @@
-<h1>Your Folders</h1>
+<header class="mb-4">
+  <h1 class="fw-bold">Welcome back, <%= current_user.email.split('@').first.capitalize %> 👋</h1>
+  <p class="text-muted">Here are your folders.</p>
+</header>
 
-<%= link_to "New Folder", new_folder_path %>
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2 class="h4 fw-semibold">Your Folders</h2>
+  <%= link_to "New Folder", new_folder_path, class: "btn btn-primary" %> </div>
 
-<ul>
-  <% @folders.each do |folder| %>
-    <li><%= link_to folder.name, folder_path(folder) %></li>
-  <% end %>
-</ul>
+<div class="row g-4"> <% @folders.each do |folder| %>
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100" role="button">
+        <div class="card-body d-flex align-items-center"> <i class="bi bi-folder-fill text-warning me-3" style="font-size: 2rem;"></i>
+          <div>
+            <h5 class="card-title mb-1"> <%= link_to folder.name, folder_path(folder), class: "stretched-link text-decoration-none text-dark" %> </h5>
 
+            <p class="text-muted small mb-0"> Updated <%= time_ago_in_words(folder.updated_at) %> ago </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %> </div>

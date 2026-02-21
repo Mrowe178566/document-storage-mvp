@@ -12,27 +12,47 @@
     </label>
   </div>
 
-  <% @folder.stored_files.each do |file| %>
-    <article class="mb-3" style="padding: 10px; border-bottom: 1px solid #ddd;">
+  <div class="row g-4">
+    <% @folder.stored_files.each do |file| %>
+      <div class="col-md-4">
+        <div class="card shadow-sm h-100 p-3">
 
-      <%= check_box_tag "file_ids[]", file.id, false, class: "file-checkbox" %>
+          <!-- Checkbox -->
+          <div class="form-check mb-2">
+            <%= check_box_tag "file_ids[]", file.id, false, class: "form-check-input file-checkbox", id: "file_#{file.id}" %>
+            <label class="form-check-label" for="file_<%= file.id %>">
+              Select
+            </label>
+          </div>
 
-      <strong style="margin-left: 8px;">
-        <% if file.uploaded_file.attached? %>
-          <%= file.uploaded_file.filename %>
-        <% else %>
-          <%= file.file_name %>
-        <% end %>
-      </strong>
+          <!-- File Icon + Name -->
+          <div class="d-flex align-items-center mb-2">
+            <i class="bi bi-file-earmark-text text-primary me-3" style="font-size: 2rem;"></i>
 
-      <% if file.uploaded_file.attached? %>
-        <div>
-          <%= link_to "Download", rails_blob_path(file.uploaded_file, disposition: "attachment") %>
+            <div>
+              <strong>
+                <% if file.uploaded_file.attached? %>
+                  <%= file.uploaded_file.filename %>
+                <% else %>
+                  <%= file.file_name %>
+                <% end %>
+              </strong>
+
+              <p class="text-muted small mb-0">
+                Uploaded <%= time_ago_in_words(file.created_at) %> ago
+              </p>
+            </div>
+          </div>
+
+          <!-- Download Link -->
+          <% if file.uploaded_file.attached? %>
+            <%= link_to "Download", rails_blob_path(file.uploaded_file, disposition: "attachment"), class: "btn btn-outline-primary btn-sm mt-2" %>
+          <% end %>
+
         </div>
-      <% end %>
-
-    </article>
-  <% end %>
+      </div>
+    <% end %>
+  </div>
 
   <%= submit_tag "Delete Selected", class: "contrast outline", style: "margin-top: 20px;" %>
 
