@@ -1,0 +1,8 @@
+<%= simple_form_for([folder, StoredFile.new], html: { multipart: true }) do |f| %>
+  <%= f.input :uploaded_file, as: :file, label: "Upload File" %>
+
+  <%= f.button :submit, "Upload",
+        class: "btn btn-dark w-100",
+        style: "padding: 0.6rem 1rem; font-weight: 600;" %>
+<% end %>
+

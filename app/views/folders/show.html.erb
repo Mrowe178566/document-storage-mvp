@@ -1,43 +1,33 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light" role="navigation">
-  <div class="container d-flex justify-content-between align-items-center">
+<%= render "shared/breadcrumbs" %>
 
-    <!-- Brand: Logo + Name -->
-    <div class="d-flex align-items-center gap-2">
-      <img 
-        src="/vault-logo.png" 
-        alt="File Vault Logo" 
-        style="height: 32px; width: 32px;"
-      >
-      <span class="navbar-brand fw-bold" style="font-size: 1.25rem;">
-        File Vault
-      </span>
+<h1 class="mb-4"><%= @folder.name %></h1>
+
+<!-- List stored files -->
+<% if @folder.stored_files.any? %>
+  <% @folder.stored_files.each do |stored_file| %>
+    <div class="d-flex justify-content-between align-items-center mb-3 p-2 border rounded">
+      <div>
+        <%= link_to stored_file.file_name, stored_file_path(stored_file), class: "fw-semibold" %>
+      </div>
+
+      <div class="d-flex gap-2">
+        <%= link_to "Download",
+              rails_blob_path(stored_file.uploaded_file, disposition: "attachment"),
+              class: "btn btn-sm btn-outline-primary" %>
+
+        <%= button_to "Delete",
+              stored_file_path(stored_file),
+              method: :delete,
+              data: { confirm: "Are you sure?" },
+              class: "btn btn-sm btn-outline-danger" %>
+      </div>
     </div>
+  <% end %>
+<% else %>
+  <p class="text-muted fst-italic">No files uploaded yet.</p>
+<% end %>
 
-    <% if user_signed_in? %>
-
-      <!-- Left side -->
-      <div>
-        <%= link_to "Dashboard", folders_path,
-                class: "contrast outline",
-                style: "padding: 0.4rem 1rem;" %>
-      </div>
-
-      <!-- Right side -->
-      <div>
-        <%= button_to "Sign Out", destroy_user_session_path, method: :delete,
-                class: "btn btn-outline-secondary",
-                style: "padding: 0.4rem 1rem;" %>
-      </div>
-
-    <% else %>
-
-      <!-- Right side when logged out -->
-      <div class="ms-auto d-flex gap-2">
-        <%= link_to "Sign In", new_user_session_path, class: "contrast outline" %>
-        <%= link_to "Sign Up", new_user_registration_path, class: "contrast outline" %>
-      </div>
-
-    <% end %>
-
-  </div>
-</nav>
+<!-- Upload new file -->
+<div class="mt-4">
+  <%= render "stored_files/form", folder: @folder %>
+</div>
