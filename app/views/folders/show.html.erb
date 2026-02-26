@@ -1,47 +1,68 @@
-<h2><%= @folder.name %></h2>
+<div class="container py-4">
 
-<hr>
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="fw-bold mb-0"><%= @folder.name %></h2>
 
-<%= form_with url: bulk_delete_stored_files_path, method: :delete do %>
-
-  <!-- Select All Checkbox -->
-  <div style="margin-bottom: 12px;">
-    <label>
-      <%= check_box_tag "select_all", "", false, id: "select_all" %>
-      Select All
-    </label>
+    <%= link_to "Back to Dashboard",
+        folders_path,
+        class: "contrast outline",
+        style: "padding: 0.4rem 1rem;" %>
   </div>
 
-  <% @folder.stored_files.each do |file| %>
-    <article class="mb-3" style="padding: 10px; border-bottom: 1px solid #ddd;">
+  <hr>
 
-      <%= check_box_tag "file_ids[]", file.id, false, class: "file-checkbox" %>
+  <!-- Bulk Delete Form -->
+  <%= form_with url: bulk_delete_stored_files_path, method: :delete, local: true do %>
 
-      <strong style="margin-left: 8px;">
-        <% if file.uploaded_file.attached? %>
-          <%= file.uploaded_file.filename %>
-        <% else %>
-          <%= file.file_name %>
-        <% end %>
-      </strong>
+    <!-- Select All -->
+    <div class="form-check mb-3">
+      <%= check_box_tag "select_all", "", false, id: "select_all", class: "form-check-input" %>
+      <label class="form-check-label" for="select_all">Select All</label>
+    </div>
 
-      <% if file.uploaded_file.attached? %>
-        <div>
-          <%= link_to "Download", rails_blob_path(file.uploaded_file, disposition: "attachment") %>
+    <!-- File List -->
+    <div class="list-group mb-4 shadow-sm">
+      <% @folder.stored_files.each do |file| %>
+        <div class="list-group-item d-flex justify-content-between align-items-center">
+
+          <div class="d-flex align-items-center">
+            <%= check_box_tag "file_ids[]", file.id, false, class: "form-check-input me-2 file-checkbox" %>
+
+            <strong>
+              <% if file.uploaded_file.attached? %>
+                <%= file.uploaded_file.filename %>
+              <% else %>
+                <%= file.file_name %>
+              <% end %>
+            </strong>
+          </div>
+
+          <% if file.uploaded_file.attached? %>
+            <%= link_to "Download",
+                rails_blob_path(file.uploaded_file, disposition: "attachment"),
+                class: "btn btn-sm btn-outline-primary" %>
+          <% end %>
+
         </div>
       <% end %>
+    </div>
 
-    </article>
+    <!-- Delete Button -->
+    <%= submit_tag "Delete Selected",
+        class: "btn btn-danger",
+        style: "padding: 0.4rem 1rem;" %>
+
   <% end %>
 
-  <%= submit_tag "Delete Selected", class: "contrast outline", style: "margin-top: 20px;" %>
+  <hr class="my-4">
 
-<% end %>
+  <!-- Upload Form Partial -->
+  <%= render "stored_files/form", folder: @folder %>
 
-<hr>
+</div>
 
-<%= link_to "Upload New File", new_stored_file_path(folder_id: @folder.id), class: "button" %>
-
+<!-- Select All Script -->
 <script>
   document.addEventListener("turbo:load", () => {
     const selectAll = document.getElementById("select_all");
