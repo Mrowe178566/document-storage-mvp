@@ -82,6 +82,7 @@ production:
   primary: &primary_production
     <<: *default
     url: <%= ENV["DATABASE_URL"] %>
+    prepared_statements: false
   # Share the same database for cache, queue, and cable (saves connections/memory)
   cache:
     <<: *primary_production
