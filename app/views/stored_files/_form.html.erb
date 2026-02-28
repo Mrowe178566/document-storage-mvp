@@ -1,0 +1,21 @@
+<div class="card p-4 shadow-sm mt-4">
+  <h5 class="fw-bold mb-3">Upload New File</h5>
+
+  <%= form_with model: StoredFile.new,
+                url: stored_files_path,
+                local: true,
+                html: { multipart: true } do |f| %>
+
+    <%= hidden_field_tag :folder_id, @folder.id %>
+
+    <div class="mb-3">
+      <%= f.label :uploaded_file, "Choose File", class: "form-label" %>
+      <%= f.file_field :uploaded_file, class: "form-control" %>
+    </div>
+
+    <%= f.submit "Upload",
+        class: "contrast outline",
+        style: "padding: 0.4rem 1rem;" %>
+
+  <% end %>
+</div>

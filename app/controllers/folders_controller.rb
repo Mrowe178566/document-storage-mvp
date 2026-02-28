@@ -28,6 +28,24 @@ class FoldersController < ApplicationController
     end
   end
 
+  def destroy
+    @folder = current_user.folders.find(params[:id])
+    @folder.destroy
+    redirect_to folders_path, notice: "Folder deleted successfully."
+  end
+
+  def show
+    @folder = current_user.folders.find(params[:id])
+    @files = @folder.stored_files
+
+    if params[:query].present?
+      @files = @files.where("file_name ILIKE ?", "%#{params[:query]}%")
+    end
+
+    add_breadcrumb "Folders", folders_path
+    add_breadcrumb @folder.name
+  end
+
   private
 
   def folder_params

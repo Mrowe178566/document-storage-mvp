@@ -1,11 +1,31 @@
-<h1>New Folder</h1>
+<div class="container py-4">
 
-<%= form_with model: @folder do |form| %>
-  <div>
-    <%= form.label :name %>
-    <%= form.text_field :name %>
+  <!-- Header + Back Button -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="fw-bold mb-0">New Folder</h2>
+
+    <%= link_to "Back to Folders",
+        folders_path,
+        class: "contrast outline",
+        style: "padding: 0.4rem 1rem;" %>
   </div>
 
-  <%= form.submit "Create Folder" %>
-<% end %>
+  <hr>
 
+  <!-- Form Card -->
+  <div class="card shadow-sm p-4" style="max-width: 500px; margin: 0 auto;">
+    <%= form_with model: @folder, local: true do |f| %>
+
+      <div class="mb-3">
+        <%= f.label :name, "Folder Name", class: "form-label fw-semibold" %>
+        <%= f.text_field :name, class: "form-control", placeholder: "Enter folder name" %>
+      </div>
+
+      <%= f.submit "Create Folder",
+          class: "btn w-100",
+          style: "background-color: #000; color: #fff; padding: 0.55rem 1rem; font-weight: 600; border-radius: 6px;" %>
+
+    <% end %>
+  </div>
+
+</div>

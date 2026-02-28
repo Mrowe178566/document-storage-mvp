@@ -10,7 +10,13 @@ class StoredFilesController < ApplicationController
   end
 
   def create
-    @folder = current_user.folders.find(params[:stored_file][:folder_id])
+    @folder = current_user.folders.find(params[:folder_id])
+
+    # Prevent empty uploads
+    if stored_file_params[:uploaded_file].blank?
+      redirect_to folder_path(@folder), alert: "Please choose a file before uploading." and return
+    end
+
     @stored_file = @folder.stored_files.build(stored_file_params)
     @stored_file.user = current_user
     @stored_file.file_name = params.dig("stored_file", "uploaded_file")&.original_filename
@@ -47,6 +53,6 @@ class StoredFilesController < ApplicationController
   private
 
   def stored_file_params
-    params.require(:stored_file).permit(:folder_id, :uploaded_file)
+    params.fetch(:stored_file, {}).permit(:uploaded_file)
   end
 end
