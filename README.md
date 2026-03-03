@@ -63,3 +63,8 @@ If users are given a simple, private place to upload and organize their files, t
 
 ## Stretch Goal:  
 Add an Organizations table to support multiple companies or teams using the system independently, with complete data isolation between them.
+
+
+File Vault™ is a trademark of Maia Rowe. 
+All branding, logos, names, and design elements are the exclusive property of the owner.
+Unauthorized use is prohibited.
