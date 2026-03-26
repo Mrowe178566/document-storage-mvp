@@ -24,6 +24,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   has_many :folders, dependent: :destroy
+  # You have two has_many associations for stored_files in your User model, which is redundant and not necessary.
   has_many :stored_files, dependent: :destroy
   has_many :stored_files, dependent: :destroy
 

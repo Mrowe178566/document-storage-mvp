@@ -1,6 +1,6 @@
 <div class="container py-5">
   <div class="row align-items-center justify-content-between">
-
+    <%# Remember that bootstrap grid system is based on a 12-column layout and you want the text and image to take up the same amount of space %>
     <!-- LEFT SIDE TEXT -->
     <div class="col-md-6 mb-5 mb-md-0">
       <h1 class="display-4 fw-bold mb-3 fade-in-up">
@@ -19,11 +19,12 @@
     </div>
 
     <!-- RIGHT SIDE LOGO -->
-    <div class="col-md-5 text-center fade-in-up" style="animation-delay: 0.45s;">
+    <%# Here is a case where I lot of different CSS rules are being applied at once and it causes clear conflicts on mobile devices %>
+    <div class="col-md-6 text-center fade-in-up" style="animation-delay: 0.45s;">
+      <%# case and point the max-width makes it jarring on thinner phones and shows a background color change that is the complete opposite of what is intended %>
       <%= image_tag "vault-logo.png",
           alt: "File Vault Logo",
-          class: "img-fluid",
-          style: "max-width: 480px;" %>
+          class: "img-fluid" %>
     </div>
 
   </div>

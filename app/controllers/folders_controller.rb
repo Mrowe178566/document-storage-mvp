@@ -5,13 +5,7 @@ class FoldersController < ApplicationController
     @folders = current_user.folders
     add_breadcrumb "Folders", folders_path
   end
-
-  def show
-    @folder = current_user.folders.find(params[:id])
-    @files = @folder.stored_files
-    add_breadcrumb "Folders", folders_path
-    add_breadcrumb @folder.name
-  end
+  # You have two show methods here. You should remove one of them to avoid confusion and potential issues with routing. The second show method includes a search functionality that allows users to filter files within a folder based on a query parameter. 
 
   def new
     @folder = Folder.new
