@@ -1,6 +1,7 @@
 <nav aria-label="Breadcrumb" style="margin-bottom: 1rem;">
   <ol style="list-style: none; padding: 0; display: flex; gap: 6px; font-size: 0.9rem;">
     
+    <%# These breadcrumbs don't appear as if these are actual links (mainly due to the color scheme) %>
     <% breadcrumbs.each_with_index do |crumb, index| %>
       <% if index < breadcrumbs.length - 1 %>
         <li>

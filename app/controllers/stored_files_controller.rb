@@ -8,7 +8,8 @@ class StoredFilesController < ApplicationController
     add_breadcrumb @folder.name, folder_path(@folder)
     add_breadcrumb "Upload New File"
   end
-
+  
+  # When it comes to uploading files, I had an issue where I was able to upload the file but when I attempted to download it back, it would not work. I believe this is because of the way that the file is being stored and retrieved from the database.
   def create
     @folder = current_user.folders.find(params[:folder_id])
 
@@ -24,6 +25,7 @@ class StoredFilesController < ApplicationController
     if @stored_file.save
       redirect_to folder_path(@folder), notice: "File uploaded successfully."
     else
+      # What happens when the file fails to upload? Well the database will make the entry in the database but the file will not be uploaded to the cloud storage provider and this can lead to a lot of confusion for users because they will see the file in their folder but when they attempt to download it, it will not work. This is a critical flaw that needs to be addressed in order to provide a better user experience and prevent confusion for users. You could consider auto deleting the file entry in the database if the file fails to upload to the cloud storage provider or you could consider adding a status column to the database that indicates whether the file was successfully uploaded or not and then you could display a message to the user indicating that the file failed to upload and that they should try again. This would provide a better user experience and prevent confusion for users. It would also help to identify any issues with the cloud storage provider and allow you to address them more quickly.
       flash[:alert] = @stored_file.errors.full_messages.to_sentence
       render :new
     end

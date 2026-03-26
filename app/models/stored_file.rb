@@ -25,5 +25,6 @@ class StoredFile < ApplicationRecord
 
   validates :file_name, presence: true
 
+  # How were certain that files were deleted from a cloud storage provider when the file is deleted from the database? Currently there is no job visible in the codebase that indicates that there is a background job that is responsible for deleting files from the cloud storage provider when the file is deleted from the database. If you aren't running a separate worker process, the job might just sit in the database table (solid_queue_jobs) and the file will never actually disappear from your storage. 
   has_one_attached :uploaded_file, dependent: :purge_later
 end
