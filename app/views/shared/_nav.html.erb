@@ -1,9 +1,11 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light" role="navigation">
   <div class="container d-flex justify-content-between align-items-center">
 
-    <!-- Brand links straight to dashboard if signed in -->
-    <%= link_to "File Vault", user_signed_in? ? folders_path : root_path, 
-        class: "navbar-brand fw-semibold" %>
+    <!-- Brand: Logo + Name -->
+    <%= link_to user_signed_in? ? folders_path : root_path, class: "navbar-brand d-flex align-items-center gap-2" do %>
+      <%= image_tag "vault-logo.png", alt: "File Vault Logo", height: 32, width: 32 %>
+      <span class="fw-bold">File Vault</span>
+    <% end %>
 
     <% if user_signed_in? %>
       <div>
