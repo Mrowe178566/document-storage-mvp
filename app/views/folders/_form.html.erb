@@ -1,0 +1,9 @@
+<%= form_with model: folder, class: "card p-4 shadow-sm" do |form| %>
+  <div class="mb-3">
+    <%= form.label :name, class: "form-label fw-semibold" %>
+    <%= form.text_field :name, class: "form-control",
+        placeholder: "Enter folder name", required: true,
+        aria: { label: "Folder name" } %>
+  </div>
+  <%= form.submit "Create Folder", class: "btn btn-primary w-100" %>
+<% end %>
