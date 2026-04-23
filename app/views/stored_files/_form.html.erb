@@ -1,0 +1,9 @@
+<%= form_with model: [@folder, @stored_file], multipart: true, class: "card p-4 shadow-sm" do |form| %>
+  <%= form.hidden_field :folder_id, value: @folder.id %>
+  <div class="mb-3">
+    <%= form.label :uploaded_file, "Choose a file", class: "form-label fw-semibold" %>
+    <%= form.file_field :uploaded_file, class: "form-control", required: true,
+        aria: { label: "File upload" } %>
+  </div>
+  <%= form.submit "Upload", class: "btn btn-primary w-100" %>
+<% end %>
