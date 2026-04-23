@@ -1,43 +1,59 @@
-<body>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "File Vault" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
 
-  <!-- Navbar -->
-  <%= render "shared/navbar" if lookup_context.exists?("shared/navbar") %>
+    <%= yield :head %>
 
-  <!-- Flash Alerts -->
-  <div class="container mt-3">
-    <% flash.each do |key, value| %>
-      <div class="alert alert-<%= key == "notice" ? "success" : "danger" %> alert-dismissible fade show" role="alert">
-        <%= value %>
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    <!-- Favicon -->
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous">
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+      <!-- App styles -->
+      <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+      <%= javascript_importmap_tags %>
+    </head>
+
+    <body>
+
+      <!-- Global Navigation -->
+      <%= render "shared/nav" %>
+
+      <!-- Flash Messages -->
+      <div class="container mt-3">
+        <%= render "shared/flash" %>
       </div>
-    <% end %>
-  </div>
 
-  <!-- Breadcrumbs -->
-  <div class="container mt-2">
-    <% if breadcrumbs.present? %>
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-          <% breadcrumbs.each do |crumb| %>
-            <li class="breadcrumb-item <%= 'active' if crumb == breadcrumbs.last %>">
-              <% if crumb == breadcrumbs.last %>
-                <%= crumb[:name] %>
-              <% else %>
-                <%= link_to crumb[:name], crumb[:path] %>
-              <% end %>
-            </li>
-          <% end %>
-        </ol>
-      </nav>
-    <% end %>
-  </div>
+      <!-- Breadcrumbs + Page Content -->
+      <div class="container">
+        <%= render "shared/breadcrumbs" if breadcrumbs.any? %>
+        <%= yield %>
+      </div>
 
-  <!-- Main Content -->
-  <div class="container py-4">
-    <%= yield %>
-  </div>
+      <!-- Global Footer -->
+      <footer class="container mt-5 py-4" style="text-align: center; color: #5f6368; font-size: 0.9rem;">
+        <p>© Built by Maia Rowe</p>
+      </footer>
 
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+      <!-- Bootstrap JS -->
+      <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"></script>
 
-</body>
+    </body>
+  </html>

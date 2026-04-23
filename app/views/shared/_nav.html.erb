@@ -1,30 +1,22 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light" role="navigation">
   <div class="container d-flex justify-content-between align-items-center">
 
+    <!-- Brand: Logo + Name -->
+    <%= link_to user_signed_in? ? folders_path : root_path, class: "navbar-brand d-flex align-items-center gap-2" do %>
+      <%= image_tag "vault-logo.png", alt: "File Vault Logo", height: 32, width: 32 %>
+      <span class="fw-bold">File Vault</span>
+    <% end %>
+
     <% if user_signed_in? %>
-
-      <!-- Left side -->
-      <div>
-        <%= link_to "Dashboard", folders_path,
-                class: "contrast outline",
-                style: "padding: 0.4rem 1rem;" %>
-      </div>
-
-      <!-- Right side -->
       <div>
         <%= button_to "Sign Out", destroy_user_session_path, method: :delete,
-                class: "btn btn-outline-secondary",
-                style: "padding: 0.4rem 1rem;" %>
+            class: "btn btn-outline-secondary btn-sm" %>
       </div>
-
     <% else %>
-
-      <!-- Right side when logged out -->
       <div class="ms-auto d-flex gap-2">
-        <%= link_to "Sign In", new_user_session_path, class: "contrast outline" %>
-        <%= link_to "Sign Up", new_user_registration_path, class: "contrast outline" %>
+        <%= link_to "Sign In", new_user_session_path, class: "btn btn-outline-primary btn-sm" %>
+        <%= link_to "Sign Up", new_user_registration_path, class: "btn btn-primary btn-sm" %>
       </div>
-
     <% end %>
 
   </div>
