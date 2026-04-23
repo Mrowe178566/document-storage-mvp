@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   devise_for :users
 
   authenticated :user do
-    resources :folders, only: [:index, :show, :new, :create]
+    resources :folders 
 
     delete "stored_files/bulk_delete",
            to: "stored_files#bulk_delete",

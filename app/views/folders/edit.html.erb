@@ -1,0 +1,12 @@
+<h2 class="fw-bold mb-4">Edit Folder</h2>
+
+<%= form_with model: @folder do |form| %>
+
+  <div class="mb-3">
+    <%= form.label :name, class: "form-label" %>
+    <%= form.text_field :name, class: "form-control" %>
+  </div>
+
+  <%= form.submit "Update Folder", class: "btn btn-primary fancy-button" %>
+
+<% end %>

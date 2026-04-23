@@ -1,65 +1,67 @@
-# Multi‑Tenant Document Storage 
-## Overview 
-This application provides a secure, minimal document‑storage system where users can sign in, create folders, and upload files. Each user has access only to their own content.
+# 📁 FileVault — Ruby on Rails Application  
+**Work in Progress (Refactoring in Progress)**
 
-## Pain Point
-Users waste time digging through emails, desktop folders, and shared drives to find the files they need, leading to frustration, lost documents, and delays in getting work done.
+FileVault is a full‑stack Ruby on Rails application that provides a clean, Google‑Drive‑style interface for managing folders and uploaded files. The project is currently undergoing refactoring to improve architecture, UI consistency, and developer documentation.
 
-## Target User
-* Name: Alexis Carter
-* Age: 29
-* Occupation: Freelance digital creator (photography, small business content)
-* Tech Comfort: Moderate — uses cloud tools but not deeply technical
-* Location: Urban or suburban area
+This README is intentionally minimal while the codebase is being updated.
 
-Alexis manages a mix of client projects, invoices, creative assets, and personal documents. Their files live everywhere — email attachments, desktop folders, random cloud drives, and screenshots saved to their phone. Alexis isn’t disorganized on purpose; they’re just juggling a lot and don’t have a simple, central place to put everything.
+---
 
-## Hypothesis
-If users are given a simple, private place to upload and organize their files, then they will save time and reduce frustration because they no longer have to search through emails, downloads, and scattered folders to find what they need.
+## 🚀 Overview
 
-## Goals & Objectives 
-1. Allow users to securely sign up and log in
-2. Provide a simple interface for uploading and organizing files
-3. Ensure users only access their own folders and files
-4. Keep the system lightweight and intuitive
-5. Deliver a stable, functional MVP quickly
+FileVault is built with:
 
-## User Roles 
-1. Can view only their own folders and files 
-2. Can upload files into their folders 
-3. Cannot access other users’ folders or files 
+- Ruby on Rails 8  
+- PostgreSQL  
+- Active Storage with Cloudinary  
+- Bootstrap 5  
+- Devise authentication  
 
-## User Stories 
-1. As an user, I want to create folders so that I can organize my own files. 
-2. As an user, I want to upload files into my folders so that I can store documents I need. 
-3. As an user, I want to view only my own folders and files so that I don’t see information that doesnt belong to me.  
+Current functionality includes:
 
-## Core Features
+- Folder creation and management  
+- File uploads  
+- Bulk delete actions  
+- Search across folders and files  
 
-### User Authentication
-1. Users can sign up or log in
-2. Authentication handled via Devise
-3. All routes require authentication
-4. Users can only access their own data
+---
 
-### Folder Management
-1. Users can create folders
-2. Folders belong to the user who created them
-3. Users can view only their own folders
+## 📦 Current Status
 
-### File Uploads
-1. Users can upload files into their folders
-2. Users cannot access files belonging to other users
+This project is actively being refactored to improve:
 
-### Access Control
-1. All access is enforced using current_user
-2. Users only see their own folders and files
+- Controller structure  
+- UI/UX consistency  
+- Error handling  
+- Test coverage  
+- Developer‑facing documentation  
 
+A full README with setup instructions, architecture notes, and contribution guidelines will be added after refactoring is complete.
 
-![Image](https://github.com/user-attachments/assets/74095758-310f-4b52-b8b1-51271801dd9b)
-![Image](https://github.com/user-attachments/assets/f4206cdd-1c4e-4f66-aad8-a21ec52f95a5)
-![Image](https://github.com/user-attachments/assets/fa549556-1dce-43a6-9964-5cef9285058b)
+---
 
+## 🛠️ Running the App (Development)
 
-## Stretch Goal:  
-Add an Organizations table to support multiple companies or teams using the system independently, with complete data isolation between them.
+After cloning the repository:
+
+```bash
+bundle install
+rails db:create db:migrate
+bin/server
+
+---
+
+## 🔐 Environment Variables
+
+The application uses environment variables for:
+
+- Cloudinary API keys  
+- Rails master key  
+
+These values are **not** committed to the repository.
+
+---
+
+## 📄 License
+
+MIT License.
