@@ -35,8 +35,9 @@
               <%= link_to "Edit", edit_folder_path(folder), class: "btn btn-outline-secondary btn-sm" %>
               <%= button_to "Delete", folder_path(folder), method: :delete,
                   class: "btn btn-outline-danger btn-sm",
-                  form: { data: { turbo_confirm: "Delete this folder and all its files?" } } %>
-            </div>
+                  form: { data: { turbo_confirm: "Delete '#{folder.name}' and all its files? This cannot be undone." } } %>
+              
+    
           </div>
         </div>
       </div>
