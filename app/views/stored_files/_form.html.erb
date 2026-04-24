@@ -1,4 +1,4 @@
-<%= form_with model: [@folder, @stored_file], multipart: true, class: "card p-4 shadow-sm" do |form| %>
+<%= form_with model: @stored_file, multipart: true, class: "card p-4 shadow-sm" do |form| %>
   <%= form.hidden_field :folder_id, value: @folder.id %>
   <div class="mb-3">
     <%= form.label :uploaded_file, "Choose a file", class: "form-label fw-semibold" %>
