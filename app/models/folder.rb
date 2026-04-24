@@ -20,5 +20,6 @@ class Folder < ApplicationRecord
   belongs_to :user
   has_many :stored_files, dependent: :destroy
   validates :name, presence: true
-  has_many :stored_files, dependent: :destroy
+  
+  scope :recent, -> { order(created_at: :desc) }
 end
