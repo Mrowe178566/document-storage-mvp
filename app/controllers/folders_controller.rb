@@ -10,6 +10,7 @@ class FoldersController < ApplicationController
   def show
     @files = @folder.stored_files
     @files = @files.search(params[:query]) if params[:query].present?
+    @stored_file = StoredFile.new
     add_breadcrumb "Folders", folders_path
     add_breadcrumb @folder.name
   end
