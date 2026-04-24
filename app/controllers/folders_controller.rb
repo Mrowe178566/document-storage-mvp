@@ -3,14 +3,14 @@ class FoldersController < ApplicationController
   before_action :set_folder, only: [:show, :edit, :update, :destroy]
 
   def index
-    @folders = current_user.folders
+    @folders = current_user.folders.recent
     add_breadcrumb "Folders", folders_path
   end
 
   def show
     @files = @folder.stored_files
-    @files = @files.where("file_name ILIKE ?", "%#{params[:query]}%") if params[:query].present?
-
+    @files = @files.search(params[:query]) if params[:query].present?
+    @stored_file = StoredFile.new
     add_breadcrumb "Folders", folders_path
     add_breadcrumb @folder.name
   end
@@ -23,7 +23,6 @@ class FoldersController < ApplicationController
 
   def create
     @folder = current_user.folders.build(folder_params)
-
     if @folder.save
       redirect_to folders_path, notice: "Folder created successfully."
     else
