@@ -10,9 +10,9 @@ class StoredFilesController < ApplicationController
   end
 
   def create
-    @folder = current_user.folders.find(params[:folder_id])
+    folder_id = params[:folder_id] || params.dig(:stored_file, :folder_id)
+    @folder = current_user.folders.find(folder_id)
 
-    # Prevent empty uploads
     if stored_file_params[:uploaded_file].blank?
       redirect_to folder_path(@folder), alert: "Please choose a file before uploading." and return
     end
@@ -37,13 +37,10 @@ class StoredFilesController < ApplicationController
 
   def bulk_delete
     file_ids = params[:file_ids]
-
     if file_ids.present?
       files = current_user.stored_files.where(id: file_ids)
       folder = files.first.folder if files.any?
-
       files.destroy_all
-
       redirect_to folder_path(folder), notice: "Selected files deleted successfully."
     else
       redirect_back fallback_location: authenticated_root_path, alert: "No files selected."
