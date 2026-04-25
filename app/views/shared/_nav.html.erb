@@ -1,25 +1,12 @@
 <% if user_signed_in? %>
   <nav class="fv-sidebar" role="navigation" aria-label="Main navigation">
 
-    <!-- Logo -->
-    <div class="fv-sidebar-logo">
-      <%= link_to root_path do %>
-        <%= image_tag "vault-logo.png", alt: "File Vault", width: 32, height: 32 %>
-      <% end %>
-    </div>
-
-    <!-- Main nav icons -->
-    <div class="fv-sidebar-nav">
+    <!-- Home icon instead of logo -->
+    <div class="fv-sidebar-nav" style="flex: 1;">
       <%= link_to folders_path,
           class: "fv-nav-icon #{current_page?(folders_path) ? 'active' : ''}",
-          title: "Folders" do %>
-        <i class="bi bi-folder"></i>
-      <% end %>
-
-      <%= link_to "#",
-          class: "fv-nav-icon",
-          title: "Search (coming soon)" do %>
-        <i class="bi bi-search"></i>
+          title: "Home" do %>
+        <i class="bi bi-house"></i>
       <% end %>
 
       <%= link_to new_folder_path,
@@ -27,13 +14,20 @@
           title: "New Folder" do %>
         <i class="bi bi-folder-plus"></i>
       <% end %>
+
+      <%= link_to "#",
+          class: "fv-nav-icon",
+          title: "Search (coming soon)" do %>
+        <i class="bi bi-search"></i>
+      <% end %>
     </div>
 
     <!-- Bottom: sign out + avatar -->
     <div class="fv-sidebar-bottom">
-      <%= button_to destroy_user_session_path, method: :delete,
+      <%= link_to destroy_user_session_path,
           class: "fv-nav-icon",
-          title: "Sign Out" do %>
+          title: "Sign Out",
+          data: { turbo_method: :delete } do %>
         <i class="bi bi-box-arrow-left"></i>
       <% end %>
       <div class="fv-avatar" title="<%= current_user.email %>">
