@@ -1,23 +1,58 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light" role="navigation">
-  <div class="container d-flex justify-content-between align-items-center">
+<% if user_signed_in? %>
+  <nav class="fv-sidebar" role="navigation" aria-label="Main navigation">
 
-    <!-- Brand: Logo + Name -->
-    <%= link_to user_signed_in? ? folders_path : root_path, class: "navbar-brand d-flex align-items-center gap-2" do %>
-      <%= image_tag "vault-logo.png", alt: "File Vault Logo", height: 32, width: 32 %>
-      <span class="fw-bold">File Vault</span>
-    <% end %>
+    <!-- Logo -->
+    <div class="fv-sidebar-logo">
+      <%= link_to root_path do %>
+        <%= image_tag "vault-logo.png", alt: "File Vault", width: 32, height: 32 %>
+      <% end %>
+    </div>
 
-    <% if user_signed_in? %>
-      <div>
-        <%= button_to "Sign Out", destroy_user_session_path, method: :delete,
-            class: "btn btn-outline-secondary btn-sm" %>
+    <!-- Main nav icons -->
+    <div class="fv-sidebar-nav">
+      <%= link_to folders_path,
+          class: "fv-nav-icon #{current_page?(folders_path) ? 'active' : ''}",
+          title: "Folders" do %>
+        <i class="bi bi-folder"></i>
+      <% end %>
+
+      <%= link_to "#",
+          class: "fv-nav-icon",
+          title: "Search (coming soon)" do %>
+        <i class="bi bi-search"></i>
+      <% end %>
+
+      <%= link_to new_folder_path,
+          class: "fv-nav-icon #{current_page?(new_folder_path) ? 'active' : ''}",
+          title: "New Folder" do %>
+        <i class="bi bi-folder-plus"></i>
+      <% end %>
+    </div>
+
+    <!-- Bottom: sign out + avatar -->
+    <div class="fv-sidebar-bottom">
+      <%= button_to destroy_user_session_path, method: :delete,
+          class: "fv-nav-icon",
+          title: "Sign Out" do %>
+        <i class="bi bi-box-arrow-left"></i>
+      <% end %>
+      <div class="fv-avatar" title="<%= current_user.email %>">
+        <%= display_name(current_user).first.upcase %>
       </div>
-    <% else %>
+    </div>
+
+  </nav>
+<% else %>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light" role="navigation">
+    <div class="container d-flex justify-content-between align-items-center">
+      <%= link_to root_path, class: "navbar-brand d-flex align-items-center gap-2" do %>
+        <%= image_tag "vault-logo.png", alt: "File Vault Logo", height: 32, width: 32 %>
+        <span class="fw-bold">File Vault</span>
+      <% end %>
       <div class="ms-auto d-flex gap-2">
         <%= link_to "Sign In", new_user_session_path, class: "btn btn-outline-primary btn-sm" %>
         <%= link_to "Sign Up", new_user_registration_path, class: "btn btn-primary btn-sm" %>
       </div>
-    <% end %>
-
-  </div>
-</nav>
+    </div>
+  </nav>
+<% end %>
