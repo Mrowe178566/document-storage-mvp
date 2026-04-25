@@ -14,6 +14,12 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+.fv-public .fv-content {
+  padding: 0;
 }
 
 /* === Sidebar === */
@@ -407,22 +413,133 @@
   margin-bottom: 32px;
 }
 
-/* === Responsive === */
-@media (max-width: 768px) {
+/* === Responsive — Tablet === */
+@media (max-width: 991px) {
   .fv-hero-inner {
     grid-template-columns: 1fr;
     gap: 40px;
+    text-align: center;
   }
 
   .fv-hero-title {
-    font-size: 2rem;
+    font-size: 2.25rem;
   }
 
+  .fv-hero .d-flex {
+    justify-content: center;
+  }
+
+  .fv-hero-card {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  .fv-feature-grid {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  }
+
+  .fv-testimonial-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* === Responsive — Mobile === */
+@media (max-width: 768px) {
+  .fv-hero {
+    padding: 48px 20px;
+    min-height: auto;
+  }
+
+  .fv-hero-title {
+    font-size: 1.75rem;
+  }
+
+  .fv-hero-subtitle {
+    font-size: 1rem;
+  }
+
+  .fv-btn-primary,
+  .fv-btn-ghost {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+
+  .fv-features,
+  .fv-testimonials,
+  .fv-cta {
+    padding: 48px 20px;
+  }
+
+  .fv-section-title {
+    font-size: 1.5rem;
+  }
+
+  .fv-feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .fv-cta h2 {
+    font-size: 1.5rem;
+  }
+
+  /* Sidebar becomes bottom tab bar on mobile */
   .fv-sidebar {
+    width: 100%;
+    height: 56px;
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 0 16px;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    position: fixed;
+  }
+
+  .fv-sidebar-nav {
+    flex-direction: row;
+    flex: 1;
+    justify-content: center;
+    gap: 0;
+  }
+
+  .fv-sidebar-logo {
     display: none;
+  }
+
+  .fv-sidebar-bottom {
+    flex-direction: row;
+    padding: 0;
+    gap: 4px;
   }
 
   .fv-main {
     margin-left: 0;
+    margin-bottom: 56px;
+  }
+
+  .fv-content {
+    padding: 16px;
+  }
+
+  .fv-topbar {
+    padding: 8px 16px;
+  }
+}
+
+/* === Responsive — Small Mobile === */
+@media (max-width: 480px) {
+  .fv-hero-title {
+    font-size: 1.5rem;
+  }
+
+  .fv-hero .d-flex {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .fv-btn-primary,
+  .fv-btn-ghost {
+    width: 100%;
+    text-align: center;
   }
 }
