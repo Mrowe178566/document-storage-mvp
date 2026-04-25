@@ -1,79 +1,161 @@
-<div class="container py-5">
-  <div class="row align-items-center justify-content-between">
-
-    <!-- Left side text -->
-    <div class="col-md-6 mb-5 mb-md-0">
-      <h1 class="display-4 fw-bold mb-3 fade-in-up">
-        Organize Your Files With Ease
+<!-- Hero Section -->
+<div class="fv-hero">
+  <div class="fv-hero-inner">
+    <div class="fv-hero-text">
+      <div class="fv-hero-badge fade-in-up">Built for manufacturing teams</div>
+      <h1 class="fv-hero-title fade-in-up">
+        Document control for the shop floor
       </h1>
-      <p class="lead mb-4 fade-in-up" style="animation-delay: 0.15s;">
-        File Vault helps you securely store, organize, and access your files from anywhere.
-        Simple. Fast. Reliable.
+      <p class="fv-hero-subtitle fade-in-up" style="animation-delay: 0.15s;">
+        File Vault gives small manufacturing teams a secure, simple place to store SOPs, maintenance logs, compliance docs and more — no IT team required.
       </p>
       <div class="d-flex gap-3 fade-in-up" style="animation-delay: 0.3s;">
-        <%= link_to "Get Started", new_user_registration_path, class: "btn btn-primary btn-lg px-4" %>
-        <%= link_to "Sign In", new_user_session_path, class: "btn btn-outline-secondary btn-lg px-4" %>
+        <%= link_to "Get Started Free", new_user_registration_path, class: "fv-btn-primary" %>
+        <%= link_to "Sign In", new_user_session_path, class: "fv-btn-ghost" %>
       </div>
     </div>
-
-    <!-- Right side logo -->
-    <div class="col-md-5 text-center fade-in-up" style="animation-delay: 0.45s;">
-      <%= image_tag "vault-logo.png", alt: "File Vault Logo",
-          class: "img-fluid vault-logo-hero" %>
+    <div class="fv-hero-visual fade-in-up" style="animation-delay: 0.45s;">
+      <div class="fv-hero-card">
+        <div class="fv-hero-card-header">
+          <i class="bi bi-folder-fill" style="color: #a78bfa; font-size: 1.25rem;"></i>
+          <span>SOPs & Work Instructions</span>
+        </div>
+        <div class="fv-hero-card-item">
+          <i class="bi bi-file-earmark-pdf" style="color: #f87171;"></i>
+          <span>machine_maintenance_SOP.pdf</span>
+        </div>
+        <div class="fv-hero-card-item">
+          <i class="bi bi-file-earmark-word" style="color: #60a5fa;"></i>
+          <span>quality_checklist_v3.docx</span>
+        </div>
+        <div class="fv-hero-card-item">
+          <i class="bi bi-file-earmark-excel" style="color: #34d399;"></i>
+          <span>inventory_log_2026.xlsx</span>
+        </div>
+        <div class="fv-hero-card-item fv-hero-card-item--muted">
+          <i class="bi bi-clock"></i>
+          <span>Updated 2 minutes ago</span>
+        </div>
+      </div>
     </div>
-
   </div>
 </div>
 
-<!-- Social Proof Section -->
-<div class="container py-5">
-
-  <!-- Section Header -->
-  <div class="text-center mb-5">
-    <h3 class="fw-bold mb-3">Trusted by teams who need secure, simple file storage</h3>
-    <p class="text-muted">Real people. Real workflows. Real results.</p>
-  </div>
-
-  <div class="row g-4">
-
-    <!-- Testimonial 1 -->
-    <div class="col-md-4">
-      <div class="card shadow-sm p-4 h-100">
-        <p class="mb-3">“File Vault helped us organize years of documents in one afternoon. The interface is clean and intuitive.”</p>
-        <div class="fw-bold">Operations Manager</div>
-        <div class="text-muted small">Midwest Manufacturing Co.</div>
+<!-- Features Section -->
+<div class="fv-features">
+  <div class="fv-features-inner">
+    <div class="text-center mb-5">
+      <h2 class="fv-section-title">Everything your team needs</h2>
+      <p class="fv-section-subtitle">Designed for small manufacturing teams with no IT support</p>
+    </div>
+    <div class="fv-feature-grid">
+      <div class="fv-feature-card">
+        <div class="fv-feature-icon">
+          <i class="bi bi-shield-lock"></i>
+        </div>
+        <h3>Secure by default</h3>
+        <p>Every user only sees their own documents. No accidental sharing, no data leaks.</p>
+      </div>
+      <div class="fv-feature-card">
+        <div class="fv-feature-icon">
+          <i class="bi bi-camera"></i>
+        </div>
+        <h3>Scan & upload</h3>
+        <p>Photograph paper documents on the shop floor and upload them instantly from any device.</p>
+      </div>
+      <div class="fv-feature-card">
+        <div class="fv-feature-icon">
+          <i class="bi bi-robot"></i>
+        </div>
+        <h3>AI-powered search</h3>
+        <p>Find any document using plain language. Ask "maintenance log for press 4" and get it instantly.</p>
+      </div>
+      <div class="fv-feature-card">
+        <div class="fv-feature-icon">
+          <i class="bi bi-people"></i>
+        </div>
+        <h3>Team workspaces</h3>
+        <p>Invite your team, set permissions, and keep every department's files organized separately.</p>
+      </div>
+      <div class="fv-feature-card">
+        <div class="fv-feature-icon">
+          <i class="bi bi-check2-circle"></i>
+        </div>
+        <h3>Document approvals</h3>
+        <p>Route documents for sign-off before they go live. Full audit trail included.</p>
+      </div>
+      <div class="fv-feature-card">
+        <div class="fv-feature-icon">
+          <i class="bi bi-cloud-upload"></i>
+        </div>
+        <h3>Cloud storage</h3>
+        <p>Files stored securely in the cloud via Cloudinary. Access from anywhere, any device.</p>
       </div>
     </div>
-
-    <!-- Testimonial 2 -->
-    <div class="col-md-4">
-      <div class="card shadow-sm p-4 h-100">
-        <p class="mb-3">“Our team finally has a secure place to store and share files without the complexity of enterprise tools.”</p>
-        <div class="fw-bold">IT Coordinator</div>
-        <div class="text-muted small">Logistics & Supply Chain</div>
-      </div>
-    </div>
-
-    <!-- Testimonial 3 -->
-    <div class="col-md-4">
-      <div class="card shadow-sm p-4 h-100">
-        <p class="mb-3">“Simple, fast, and reliable. File Vault fits perfectly into our daily workflow.”</p>
-        <div class="fw-bold">Project Lead</div>
-        <div class="text-muted small">Local Services Firm</div>
-      </div>
-    </div>
-
   </div>
-
-  <!-- Trusted By Logos -->
-  <div class="text-center mt-5">
-    <p class="text-muted mb-3">Trusted by teams across industries</p>
-    <div class="d-flex justify-content-center gap-4 flex-wrap opacity-75">
-      <span class="fw-semibold">Acme Corp</span>
-      <span class="fw-semibold">Northline Logistics</span>
-      <span class="fw-semibold">Midwest Fabrication</span>
-      <span class="fw-semibold">BrightPath Services</span>
-    </div>
-  </div>
-
 </div>
+
+<!-- Testimonials -->
+<div class="fv-testimonials">
+  <div class="fv-features-inner">
+    <div class="text-center mb-5">
+      <h2 class="fv-section-title">Trusted by manufacturing teams</h2>
+      <p class="fv-section-subtitle">Real people. Real workflows. Real results.</p>
+    </div>
+    <div class="fv-testimonial-grid">
+      <div class="fv-testimonial-card">
+        <p>"File Vault helped us organize years of documents in one afternoon. The interface is clean and intuitive."</p>
+        <div class="fv-testimonial-author">
+          <div class="fv-testimonial-avatar">OM</div>
+          <div>
+            <div class="fw-semibold">Operations Manager</div>
+            <div class="fv-testimonial-company">Midwest Manufacturing Co.</div>
+          </div>
+        </div>
+      </div>
+      <div class="fv-testimonial-card">
+        <p>"Our team finally has a secure place to store files without the complexity of enterprise tools."</p>
+        <div class="fv-testimonial-author">
+          <div class="fv-testimonial-avatar">IC</div>
+          <div>
+            <div class="fw-semibold">IT Coordinator</div>
+            <div class="fv-testimonial-company">Logistics & Supply Chain</div>
+          </div>
+        </div>
+      </div>
+      <div class="fv-testimonial-card">
+        <p>"Simple, fast, and reliable. File Vault fits perfectly into our daily workflow."</p>
+        <div class="fv-testimonial-author">
+          <div class="fv-testimonial-avatar">PL</div>
+          <div>
+            <div class="fw-semibold">Project Lead</div>
+            <div class="fv-testimonial-company">Local Services Firm</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="text-center mt-5">
+      <p class="fv-section-subtitle mb-3">Trusted by teams across industries</p>
+      <div class="d-flex justify-content-center gap-4 flex-wrap fv-trust-logos">
+        <span>Acme Corp</span>
+        <span>Northline Logistics</span>
+        <span>Midwest Fabrication</span>
+        <span>BrightPath Services</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA Section -->
+<div class="fv-cta">
+  <div class="fv-cta-inner">
+    <h2>Ready to get your documents under control?</h2>
+    <p>Set up your workspace in minutes. No IT team required.</p>
+    <%= link_to "Get Started Free", new_user_registration_path, class: "fv-btn-primary" %>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="fv-footer">
+  <p>© Built by Maia Rowe · File Vault</p>
+</footer>
