@@ -123,8 +123,6 @@ app/
 ## Known Issues / In Progress
 
 - Global file search across folders (planned: `feature/global-search`)
-- Modal confirmation for delete actions (planned: `feature/modal-delete`)
-- Full RSpec test suite (planned: `feature/tests`)
 
 ---
 
