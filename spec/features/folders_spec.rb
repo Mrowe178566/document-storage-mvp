@@ -5,9 +5,9 @@ RSpec.describe "Folders", type: :feature do
 
   before do
     visit new_user_session_path
-    fill_in "Email", with: user.email
+    fill_in "Email address", with: user.email
     fill_in "Password", with: "password123"
-    click_button "Log in"
+    click_button "Sign in"
   end
 
   describe "creating a folder" do
