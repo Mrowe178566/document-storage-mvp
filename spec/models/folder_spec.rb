@@ -15,7 +15,7 @@ RSpec.describe Folder, type: :model do
       user = User.create!(email: "test@example.com", password: "password")
       older = user.folders.create!(name: "Older Folder")
       newer = user.folders.create!(name: "Newer Folder")
-      expect(Folder.recent).to eq([newer, older])
+      expect(Folder.recent).to eq([ newer, older ])
     end
   end
 end

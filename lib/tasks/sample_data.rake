@@ -12,7 +12,7 @@ task({ sample_data: :environment }) do
   )
 
   puts "Creating sample folders..."
-  ["Client Projects", "Invoices", "Creative Assets"].each do |folder_name|
+  [ "Client Projects", "Invoices", "Creative Assets" ].each do |folder_name|
     folder = user.folders.create!(name: folder_name)
     puts "  Created folder: #{folder.name}"
 
