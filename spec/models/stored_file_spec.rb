@@ -16,7 +16,7 @@ RSpec.describe StoredFile, type: :model do
       folder = user.folders.create!(name: "Test Folder")
       zebra = folder.stored_files.create!(file_name: "zebra.pdf", user: user)
       apple = folder.stored_files.create!(file_name: "apple.pdf", user: user)
-      expect(StoredFile.by_name).to eq([apple, zebra])
+      expect(StoredFile.by_name).to eq([ apple, zebra ])
     end
 
     it "searches files by name" do
