@@ -42,6 +42,8 @@ group :development do
   gem "rails-erd"                     # Generate ER diagrams
   gem "rufo"                          # Ruby code formatter
   gem "web-console"                   # Console on exception pages
+  gem "brakeman", require: false
+  gem "rubocop-rails-omakase", require: false
 end
 
 group :test do
