@@ -543,3 +543,91 @@
     text-align: center;
   }
 }
+
+/* === Auth Pages === */
+.fv-auth-wrapper {
+  min-height: 100vh;
+  background: #1a1a2e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.fv-auth-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 40px;
+  width: 100%;
+  max-width: 420px;
+}
+
+.fv-auth-logo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.fv-auth-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.fv-auth-subtitle {
+  font-size: 14px;
+  color: #888;
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.fv-field {
+  margin-bottom: 16px;
+}
+
+.fv-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #1a1a2e;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.fv-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 0.5px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #1a1a2e;
+  background: #fafafa;
+  transition: border-color 0.15s;
+}
+
+.fv-input:focus {
+  outline: none;
+  border-color: #a78bfa;
+  background: #ffffff;
+}
+
+.fv-remember {
+  margin-bottom: 8px;
+}
+
+.fv-auth-links {
+  margin-top: 24px;
+  text-align: center;
+  font-size: 13px;
+  color: #888;
+}
+
+.fv-auth-links a {
+  color: #a78bfa;
+  text-decoration: none;
+}
+
+.fv-auth-links a:hover {
+  text-decoration: underline;
+}
