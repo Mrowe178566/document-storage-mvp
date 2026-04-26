@@ -7,6 +7,7 @@ require "capybara/rspec"
 # Prevent database truncation if the environment is production
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 require "rspec/rails"
+require "simple_form"
 require "support/headless_chrome"
 # Add additional requires below this line. Rails is not loaded until this point!
 
