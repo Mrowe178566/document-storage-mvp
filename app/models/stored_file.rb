@@ -23,7 +23,10 @@ class StoredFile < ApplicationRecord
   validate :uploaded_file_size
 
   scope :by_name, -> { order(file_name: :asc) }
-  scope :search, ->(query) { where("file_name ILIKE ?", "%#{query}%") }
+  scope :search, ->(query) {
+    sanitized = sanitize_sql_like(query.to_s)
+    where("file_name ILIKE ?", "%#{sanitized}%")
+  }
 
   private
 
