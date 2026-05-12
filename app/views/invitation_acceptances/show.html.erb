@@ -1,0 +1,40 @@
+<div class="container py-5" style="max-width: 480px;">
+
+  <h1 class="fw-bold mb-2">You're invited</h1>
+  <p class="text-muted mb-4">
+    <strong><%= @invitation.invited_by.email %></strong> invited you to join
+    <strong><%= @invitation.workspace.name %></strong> on File Vault.
+    Set a password to accept.
+  </p>
+
+  <%= form_with model: @user, url: invitation_acceptance_path(token: @invitation.token), method: :patch, local: true do |form| %>
+    <% if @user.errors.any? %>
+      <div class="alert alert-danger">
+        <ul class="mb-0">
+          <% @user.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="mb-3">
+      <%= form.label :email, class: "form-label" %>
+      <input type="email" value="<%= @invitation.email %>" class="form-control" disabled>
+    </div>
+
+    <div class="mb-3">
+      <%= form.label :password, class: "form-label" %>
+      <%= form.password_field :password, class: "form-control", required: true, autofocus: true, minlength: 6 %>
+      <div class="form-text">At least 6 characters.</div>
+    </div>
+
+    <div class="mb-3">
+      <%= form.label :password_confirmation, "Confirm password", class: "form-label" %>
+      <%= form.password_field :password_confirmation, class: "form-control", required: true %>
+    </div>
+
+    <%= form.submit "Accept invitation", class: "btn btn-primary w-100" %>
+  <% end %>
+
+</div>

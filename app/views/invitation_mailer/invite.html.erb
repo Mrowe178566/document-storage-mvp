@@ -1,0 +1,22 @@
+<h2>You're invited to <%= @workspace.name %></h2>
+
+<p>
+  <%= @inviter.email %> invited you to join <strong><%= @workspace.name %></strong>
+  on File Vault, a shared place for your team's documents.
+</p>
+
+<p>
+  <a href="<%= @accept_url %>" style="display: inline-block; padding: 10px 20px; background: #4f46e5; color: #fff; text-decoration: none; border-radius: 6px;">
+    Accept invitation
+  </a>
+</p>
+
+<p style="color: #64748b; font-size: 0.9em;">
+  Or copy and paste this link into your browser:<br>
+  <%= @accept_url %>
+</p>
+
+<p style="color: #64748b; font-size: 0.9em;">
+  This invitation expires <%= @invitation.expires_at.strftime("%B %-d, %Y") %>.
+  If you weren't expecting this email you can ignore it.
+</p>

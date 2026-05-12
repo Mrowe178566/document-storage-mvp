@@ -1,0 +1,30 @@
+<div class="container py-4" style="max-width: 480px;">
+
+  <h1 class="fw-bold mb-2">Invite a member</h1>
+  <p class="text-muted mb-4">
+    They'll get an email with a link to join <strong><%= current_workspace.name %></strong>.
+  </p>
+
+  <%= form_with model: @invitation, url: workspace_invitations_path, local: true do |form| %>
+    <% if @invitation.errors.any? %>
+      <div class="alert alert-danger">
+        <ul class="mb-0">
+          <% @invitation.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="mb-3">
+      <%= form.label :email, class: "form-label" %>
+      <%= form.email_field :email, class: "form-control", required: true, autofocus: true, placeholder: "teammate@example.com" %>
+    </div>
+
+    <div class="d-flex gap-2">
+      <%= form.submit "Send invitation", class: "btn btn-primary" %>
+      <%= link_to "Cancel", workspace_path, class: "btn btn-outline-secondary" %>
+    </div>
+  <% end %>
+
+</div>

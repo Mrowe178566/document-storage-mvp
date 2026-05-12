@@ -3,7 +3,7 @@ class FoldersController < ApplicationController
   before_action :set_folder, only: [ :show, :edit, :update, :destroy ]
 
   def index
-    @folders = current_user.folders.recent
+    @folders = current_workspace.folders.recent
     add_breadcrumb "Folders", folders_path
   end
 
@@ -16,13 +16,14 @@ class FoldersController < ApplicationController
   end
 
   def new
-    @folder = Folder.new
+    @folder = current_workspace.folders.new
     add_breadcrumb "Folders", folders_path
     add_breadcrumb "New"
   end
 
   def create
-    @folder = current_user.folders.build(folder_params)
+    @folder = current_workspace.folders.build(folder_params)
+    @folder.user = current_user
     if @folder.save
       redirect_to folders_path, notice: "Folder created successfully."
     else
@@ -51,7 +52,7 @@ class FoldersController < ApplicationController
   private
 
   def set_folder
-    @folder = current_user.folders.find(params[:id])
+    @folder = current_workspace.folders.find(params[:id])
   end
 
   def folder_params

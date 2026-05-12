@@ -44,6 +44,14 @@ RSpec.configure do |config|
     config.include Devise::Test::ControllerHelpers, type: :view
   end
 
+  if defined?(Devise::Test::IntegrationHelpers)
+    config.include Devise::Test::IntegrationHelpers, type: :feature
+    config.include Devise::Test::IntegrationHelpers, type: :request
+  end
+
+  config.include ActiveJob::TestHelper, type: :feature
+  config.include ActiveJob::TestHelper, type: :request
+
   # Rails 8 issue: https://github.com/heartcombo/devise/issues/5705
   config.before(:each, type: :controller) do
     Rails.application.reload_routes_unless_loaded

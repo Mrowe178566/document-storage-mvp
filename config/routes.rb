@@ -8,10 +8,19 @@ Rails.application.routes.draw do
            to: "stored_files#bulk_delete",
            as: :bulk_delete_stored_files
 
-    resources :stored_files, only: [ :new, :create, :destroy ]
+    resources :stored_files, only: [ :create, :destroy ]
+
+    resource :workspace, only: [ :show, :update ] do
+      resources :invitations, only: [ :new, :create ]
+      resources :members, only: [ :destroy ], module: :workspaces
+    end
 
     root "folders#index", as: :authenticated_root
   end
+
+  # Public invitation acceptance — no authentication required
+  get  "invitations/:token", to: "invitation_acceptances#show", as: :invitation_acceptance
+  patch "invitations/:token", to: "invitation_acceptances#update"
 
   unauthenticated do
     root "home#index"

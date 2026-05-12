@@ -1,56 +1,51 @@
 source "https://rubygems.org"
 
-gem "rails", "~> 8.0.2"               # The web framework
-gem "propshaft"                       # Asset pipeline (CSS, JS, images)
-gem "pg", "~> 1.1"                    # PostgreSQL database adapter
-gem "puma", ">= 5.0"                  # Web server
+gem "rails", "~> 8.0.2"
+gem "propshaft"
+gem "pg", "~> 1.1"
+gem "puma", ">= 5.0"
 gem "devise"
 gem "cloudinary"
 gem "activestorage-cloudinary-service"
 
-gem "importmap-rails"                 # JavaScript with ESM import maps
-gem "turbo-rails"                     # Hotwire page acceleration (SPA-like)
-gem "stimulus-rails"                  # Hotwire JavaScript framework
-gem "solid_cache"                     # Database-backed Rails.cache
-gem "solid_queue"                     # Database-backed Active Job
-gem "solid_cable"                     # Database-backed Action Cable
-gem "bootsnap", require: false        # Faster boot times via caching
-gem "thruster", require: false        # HTTP caching/compression for Puma
-gem "tzinfo-data", platforms: %i[windows jruby] # Timezone data for Windows/JRuby
-gem "dotenv"                          # Load environment variables from .env
-gem "http"                            # Simple HTTP client for APIs
-gem "rollbar"                         # Error tracking in production
-gem "appdev_support"                  # Learning helpers (nicer error messages, etc.)
+gem "importmap-rails"
+gem "turbo-rails"
+gem "stimulus-rails"
+gem "solid_cache"
+gem "solid_queue"
+gem "solid_cable"
+gem "bootsnap", require: false
+gem "thruster", require: false
+gem "tzinfo-data", platforms: %i[windows jruby]
+gem "dotenv"
 
 group :development, :test do
-  gem "debug", platforms: %i[mri windows], require: "debug/prelude" # Ruby debugger
-  gem "rspec-rails", "~> 7.1.1"       # Testing framework
-  gem "grade_runner", "~> 0.0.15" # Automated grading
+  gem "debug", platforms: %i[mri windows], require: "debug/prelude"
+  gem "rspec-rails", "~> 7.1.1"
 end
 
 group :development do
-  gem "amazing_print"                 # Pretty print Ruby objects in console
-  gem "annotaterb"                    # Add schema info to model files
-  gem "better_errors"                 # Better error pages with console
-  gem "binding_of_caller"             # Required for better_errors console
-  gem "dev_toolbar", "~> 2.1.0"       # Development toolbar
-  gem "draft_generators", "~> 0.0.5"  # Beginner-friendly Rails generators
-  gem "haikunator"                    # Generate random names (for databases)
-  gem "htmlbeautifier"                # Format HTML/ERB files
-  gem "pry-rails"                     # Better Rails console
-  gem "rails_db", "~> 2.5.0"          # Database viewer in browser
-  gem "rails-erd"                     # Generate ER diagrams
-  gem "rufo"                          # Ruby code formatter
-  gem "web-console"                   # Console on exception pages
+  gem "amazing_print"
+  gem "annotaterb"
+  gem "better_errors"
+  gem "binding_of_caller"
+  gem "dev_toolbar", "~> 2.1.0"
+  gem "htmlbeautifier"
+  gem "letter_opener"
+  gem "pry-rails"
+  gem "rails_db", "~> 2.5.0"
+  gem "rails-erd"
+  gem "rufo"
+  gem "web-console"
   gem "brakeman", require: false
   gem "rubocop-rails-omakase", require: false
 end
 
 group :test do
-  gem "capybara"                      # Browser testing
-  gem "rails-controller-testing"      # Controller test helpers
-  gem "rspec-html-matchers"           # HTML matchers for tests
-  gem "selenium-webdriver", "~> 4.11.0" # Browser automation
-  gem "shoulda-matchers", "~> 6.4"    # One-liner tests for common patterns
-  gem "webmock"                       # Mock HTTP requests in tests
+  gem "capybara"
+  gem "rails-controller-testing"
+  gem "rspec-html-matchers"
+  gem "selenium-webdriver", "~> 4.11.0"
+  gem "shoulda-matchers", "~> 6.4"
+  gem "webmock"
 end

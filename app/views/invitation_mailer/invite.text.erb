@@ -1,0 +1,11 @@
+You're invited to <%= @workspace.name %>
+==========================================
+
+<%= @inviter.email %> invited you to join <%= @workspace.name %> on File Vault,
+a shared place for your team's documents.
+
+Accept the invitation:
+<%= @accept_url %>
+
+This invitation expires <%= @invitation.expires_at.strftime("%B %-d, %Y") %>.
+If you weren't expecting this email you can ignore it.

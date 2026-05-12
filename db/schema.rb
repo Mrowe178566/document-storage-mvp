@@ -10,10 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_02_18_004950) do
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "pg_catalog.plpgsql"
-
+ActiveRecord::Schema[8.0].define(version: 2026_05_10_213000) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -44,7 +41,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_18_004950) do
 
   create_table "folders", force: :cascade do |t|
     t.string "name"
-    t.bigint "user_id"
+    t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_folders_on_user_id"
@@ -194,8 +191,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_18_004950) do
 
   create_table "stored_files", force: :cascade do |t|
     t.string "file_name"
-    t.bigint "user_id"
-    t.bigint "folder_id"
+    t.bigint "user_id", null: false
+    t.bigint "folder_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["folder_id"], name: "index_stored_files_on_folder_id"

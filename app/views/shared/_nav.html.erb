@@ -15,10 +15,10 @@
         <i class="bi bi-folder-plus"></i>
       <% end %>
 
-      <%= link_to "#",
-          class: "fv-nav-icon",
-          title: "Search (coming soon)" do %>
-        <i class="bi bi-search"></i>
+      <%= link_to workspace_path,
+          class: "fv-nav-icon #{current_page?(workspace_path) ? 'active' : ''}",
+          title: "Workspace settings" do %>
+        <i class="bi bi-people"></i>
       <% end %>
     </div>
 

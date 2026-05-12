@@ -1,26 +1,29 @@
 services:
   - type: web
-    name: document-storage-mvp # the name of this service, you should change this
-    runtime: ruby # this app is written in ruby
-    plan: free # make sure to set this to free or you'll get billed $$$
-    buildCommand: "./bin/render-build.sh" # we already created these two files for you
+    name: file-vault
+    runtime: ruby
+    plan: free
+    buildCommand: "./bin/render-build.sh"
     startCommand: "./bin/render-start.sh"
-    envVars: # this section sets some ENV variables needed by Render for deployment
+    envVars:
       - key: SECRET_KEY_BASE
         generateValue: true
       - key: DATABASE_URL
         sync: false
-      # Memory optimization for Render free tier (512MB RAM)
+      # Memory tuning for the 512MB free tier
       - key: WEB_CONCURRENCY
-        value: "1" # Single worker to fit in 512MB
+        value: "1"
       - key: RAILS_MAX_THREADS
-        value: "3" # Cap threads to reduce memory
+        value: "3"
       - key: MALLOC_ARENA_MAX
-        value: "2" # Reduce memory fragmentation
+        value: "2"
       - key: SOLID_QUEUE_IN_PUMA
-        value: "true" # Run background jobs in same process
+        value: "true"
       - key: BUNDLE_WITHOUT
-        value: "development:test" # Don't install dev/test gems in production
+        value: "development:test"
+      # Public host used in mailer links (set to the deployed URL, e.g. file-vault.onrender.com)
+      - key: APP_HOST
+        sync: false
       # Cloudinary (Active Storage)
       - key: CLOUDINARY_CLOUD_NAME
         sync: false

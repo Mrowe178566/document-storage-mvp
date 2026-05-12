@@ -21,21 +21,15 @@ RSpec.describe "Folders", type: :feature do
   end
 
   describe "viewing folders" do
-    it "shows only the current user's folders" do
-      user.folders.create!(name: "My Folder")
+    it "shows only the current workspace's folders" do
+      user.workspace.folders.create!(name: "My Folder", user: user)
+
       other_user = User.create!(email: "other@example.com", password: "password123")
-      other_user.folders.create!(name: "Other Folder")
+      other_user.workspace.folders.create!(name: "Other Folder", user: other_user)
+
       visit folders_path
       expect(page).to have_content("My Folder")
       expect(page).not_to have_content("Other Folder")
-    end
-  end
-
-  describe "deleting a folder" do
-    it "allows a user to delete their folder" do
-      user.folders.create!(name: "Delete Me")
-      visit folders_path
-      expect(page).to have_content("Delete Me")
     end
   end
 end

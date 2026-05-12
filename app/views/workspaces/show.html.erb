@@ -1,0 +1,94 @@
+<div class="container py-4">
+
+  <header class="mb-4">
+    <h1 class="fw-bold mb-1"><%= @workspace.name %></h1>
+    <p class="text-muted mb-0">Workspace settings, members, and pending invitations.</p>
+  </header>
+
+  <% if current_user.admin? %>
+    <section class="card mb-4">
+      <div class="card-body">
+        <h2 class="h5 fw-semibold mb-3">Workspace name</h2>
+        <%= form_with model: @workspace, url: workspace_path, method: :patch, local: true, class: "d-flex gap-2" do |form| %>
+          <%= form.text_field :name, class: "form-control", required: true %>
+          <%= form.submit "Save", class: "btn btn-primary" %>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
+
+  <section class="card mb-4">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="h5 fw-semibold mb-0">Members</h2>
+        <% if current_user.admin? %>
+          <%= link_to "Invite member", new_workspace_invitation_path, class: "btn btn-primary btn-sm" %>
+        <% end %>
+      </div>
+
+      <ul class="list-group">
+        <% @members.each do |member| %>
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+              <div class="fw-semibold"><%= member.email %></div>
+              <span class="badge text-bg-<%= member.admin? ? 'primary' : 'secondary' %> text-uppercase">
+                <%= member.role %>
+              </span>
+              <% if member == current_user %>
+                <span class="badge text-bg-light ms-1">You</span>
+              <% end %>
+            </div>
+            <% if current_user.admin? && member != current_user %>
+              <%= button_to "Remove",
+                            workspace_member_path(member),
+                            method: :delete,
+                            class: "btn btn-outline-danger btn-sm",
+                            form: { data: { turbo_confirm: "Remove #{member.email} from #{@workspace.name}? Their folders and files stay in the workspace." } } %>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </section>
+
+  <% if @pending_invitations.any? %>
+    <section class="card">
+      <div class="card-body">
+        <h2 class="h5 fw-semibold mb-1">Pending invitations</h2>
+        <p class="text-muted small mb-3">
+          Invitees receive an email automatically. You can also share the accept link manually if email delivery is delayed.
+        </p>
+        <ul class="list-group">
+          <% @pending_invitations.each do |invitation| %>
+            <li class="list-group-item">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                  <div class="fw-semibold"><%= invitation.email %></div>
+                  <small class="text-muted">
+                    Sent by <%= invitation.invited_by.email %> ·
+                    expires <%= time_ago_in_words(invitation.expires_at, include_seconds: false) %> from now
+                  </small>
+                </div>
+              </div>
+              <div data-controller="clipboard" class="input-group input-group-sm">
+                <input type="text"
+                       readonly
+                       value="<%= invitation_acceptance_url(token: invitation.token) %>"
+                       class="form-control font-monospace"
+                       data-clipboard-target="source"
+                       onclick="this.select()">
+                <button class="btn btn-outline-secondary"
+                        type="button"
+                        data-action="click->clipboard#copy"
+                        data-clipboard-target="button">
+                  Copy link
+                </button>
+              </div>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </section>
+  <% end %>
+
+</div>
