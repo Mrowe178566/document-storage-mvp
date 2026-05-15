@@ -93,7 +93,7 @@ RSpec.describe "Invitation flow", type: :feature do
   end
 
   describe "as an existing-account invitee" do
-    let(:existing_user) { User.create!(email: "existing@example.com", password: "password") }
+    let!(:existing_user) { User.create!(email: "existing@example.com", password: "password") }
     let!(:invitation) do
       workspace.invitations.create!(email: "existing@example.com", invited_by: admin)
     end
