@@ -6,15 +6,28 @@
     </div>
 
     <h1 class="fv-auth-title">Create your account</h1>
-    <p class="fv-auth-subtitle">Set up your File Vault workspace in minutes</p>
+    <p class="fv-auth-subtitle">Pick a workspace name. You can invite teammates later.</p>
 
     <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
       <%= f.error_notification %>
 
       <div class="fv-form-group">
-        <%= f.input :email,
+        <%= f.input :workspace_name,
             required: true,
             autofocus: true,
+            label: "Workspace name",
+            placeholder: "e.g., Acme Inc.",
+            input_html: {
+              class: "fv-input",
+              value: resource.workspace_name
+            },
+            label_html: { class: "fv-label" },
+            wrapper_html: { class: "fv-field" } %>
+      </div>
+
+      <div class="fv-form-group">
+        <%= f.input :email,
+            required: true,
             label: "Email address",
             input_html: {
               autocomplete: "email",

@@ -52,6 +52,9 @@ RSpec.configure do |config|
   config.include ActiveJob::TestHelper, type: :feature
   config.include ActiveJob::TestHelper, type: :request
 
+  require_relative "support/workspace_helpers"
+  config.include WorkspaceHelpers
+
   # Rails 8 issue: https://github.com/heartcombo/devise/issues/5705
   config.before(:each, type: :controller) do
     Rails.application.reload_routes_unless_loaded

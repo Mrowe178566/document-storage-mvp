@@ -13,9 +13,9 @@ RSpec.describe Folder, type: :model do
 
   describe "scopes" do
     it "returns folders in descending order of creation" do
-      user = User.create!(email: "test@example.com", password: "password")
-      older = user.workspace.folders.create!(name: "Older Folder", user: user)
-      newer = user.workspace.folders.create!(name: "Newer Folder", user: user)
+      user, workspace = create_owner_with_workspace
+      older = workspace.folders.create!(name: "Older Folder", user: user)
+      newer = workspace.folders.create!(name: "Newer Folder", user: user)
       expect(Folder.recent).to eq([ newer, older ])
     end
   end

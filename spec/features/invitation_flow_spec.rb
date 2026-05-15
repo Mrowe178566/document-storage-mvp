@@ -1,8 +1,9 @@
 require "rails_helper"
 
 RSpec.describe "Invitation flow", type: :feature do
-  let(:admin) { User.create!(email: "admin@example.com", password: "password") }
-  let(:workspace) { admin.workspace }
+  let(:setup) { create_owner_with_workspace(email: "admin@example.com") }
+  let(:admin) { setup[0] }
+  let(:workspace) { setup[1] }
 
   before { ActionMailer::Base.deliveries.clear }
 
@@ -30,17 +31,6 @@ RSpec.describe "Invitation flow", type: :feature do
       expect(delivered.to).to eq([ "teammate@example.com" ])
       expect(delivered.subject).to include(workspace.name)
     end
-
-    it "blocks invitations to emails that already have an account" do
-      User.create!(email: "existing@example.com", password: "password")
-
-      visit new_workspace_invitation_path
-      fill_in "Email", with: "existing@example.com"
-      click_button "Send invitation"
-
-      expect(page).to have_content("An account already exists for existing@example.com")
-      expect(workspace.invitations.where(email: "existing@example.com")).to be_empty
-    end
   end
 
   describe "as the invitee" do
@@ -59,8 +49,8 @@ RSpec.describe "Invitation flow", type: :feature do
 
       new_user = User.find_by(email: "newcomer@example.com")
       expect(new_user).to be_present
-      expect(new_user.workspace).to eq(workspace)
-      expect(new_user.role).to eq("member")
+      expect(new_user.workspaces).to include(workspace)
+      expect(new_user.role_in(workspace)).to eq("member")
       expect(invitation.reload).to be_accepted
     end
 

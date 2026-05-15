@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  devise_for :users
+  devise_for :users, controllers: { registrations: "users/registrations" }
 
   authenticated :user do
     resources :folders
@@ -12,7 +12,11 @@ Rails.application.routes.draw do
 
     resource :workspace, only: [ :show, :update ] do
       resources :invitations, only: [ :new, :create ]
-      resources :members, only: [ :destroy ], module: :workspaces
+      resources :memberships, only: [ :update, :destroy ], module: :workspaces
+    end
+
+    resources :workspaces, only: [] do
+      post :switch, on: :member, to: "workspaces/switches#create"
     end
 
     root "folders#index", as: :authenticated_root

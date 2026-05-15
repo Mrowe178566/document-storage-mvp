@@ -1,10 +1,12 @@
 require "rails_helper"
 
 RSpec.describe "Cross-workspace access is blocked", type: :feature do
-  let(:owner) { User.create!(email: "owner@example.com", password: "password") }
-  let(:owners_folder) { owner.workspace.folders.create!(name: "Owner private", user: owner) }
+  let(:setup_a) { create_owner_with_workspace(email: "owner@example.com", workspace_name: "Owner WS") }
+  let(:owner) { setup_a[0] }
+  let(:owners_workspace) { setup_a[1] }
+  let(:owners_folder) { owners_workspace.folders.create!(name: "Owner private", user: owner) }
   let(:owners_file) do
-    file = owner.workspace.stored_files.build(file_name: "secret.pdf", user: owner, folder: owners_folder)
+    file = owners_workspace.stored_files.build(file_name: "secret.pdf", user: owner, folder: owners_folder)
     file.uploaded_file.attach(
       io: File.open(Rails.root.join("spec/fixtures/files/sample.pdf")),
       filename: "secret.pdf",
@@ -14,7 +16,8 @@ RSpec.describe "Cross-workspace access is blocked", type: :feature do
     file
   end
 
-  let(:outsider) { User.create!(email: "outsider@example.com", password: "password") }
+  let(:setup_b) { create_owner_with_workspace(email: "outsider@example.com", workspace_name: "Outsider WS") }
+  let(:outsider) { setup_b[0] }
 
   before do
     owners_folder

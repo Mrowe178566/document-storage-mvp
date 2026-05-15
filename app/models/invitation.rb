@@ -26,7 +26,9 @@ class Invitation < ApplicationRecord
 
   def accept!(user)
     transaction do
-      user.update!(workspace: workspace, role: "member")
+      Membership.find_or_create_by!(user: user, workspace: workspace) do |m|
+        m.role = "member"
+      end
       update!(accepted_at: Time.current)
     end
   end

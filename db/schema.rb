@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_05_10_214300) do
+ActiveRecord::Schema[8.0].define(version: 2026_05_12_100200) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -62,6 +62,18 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_10_214300) do
     t.index ["token"], name: "index_invitations_on_token", unique: true
     t.index ["workspace_id", "email"], name: "index_invitations_on_workspace_id_and_email"
     t.index ["workspace_id"], name: "index_invitations_on_workspace_id"
+  end
+
+  create_table "memberships", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "workspace_id", null: false
+    t.string "role", default: "member", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "workspace_id"], name: "index_memberships_on_user_id_and_workspace_id", unique: true
+    t.index ["user_id"], name: "index_memberships_on_user_id"
+    t.index ["workspace_id", "role"], name: "index_memberships_on_workspace_id_and_role"
+    t.index ["workspace_id"], name: "index_memberships_on_workspace_id"
   end
 
   create_table "solid_cable_messages", force: :cascade do |t|
@@ -227,11 +239,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_10_214300) do
     t.string "username"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "role", default: "member", null: false
-    t.bigint "workspace_id", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
-    t.index ["workspace_id"], name: "index_users_on_workspace_id"
   end
 
   create_table "workspaces", force: :cascade do |t|
@@ -248,6 +257,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_10_214300) do
   add_foreign_key "folders", "workspaces"
   add_foreign_key "invitations", "users", column: "invited_by_id"
   add_foreign_key "invitations", "workspaces"
+  add_foreign_key "memberships", "users"
+  add_foreign_key "memberships", "workspaces"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
@@ -257,5 +268,4 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_10_214300) do
   add_foreign_key "stored_files", "folders"
   add_foreign_key "stored_files", "users"
   add_foreign_key "stored_files", "workspaces"
-  add_foreign_key "users", "workspaces"
 end

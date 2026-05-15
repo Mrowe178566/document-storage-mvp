@@ -5,7 +5,7 @@
     <p class="text-muted mb-0">Workspace settings, members, and pending invitations.</p>
   </header>
 
-  <% if current_user.admin? %>
+  <% if current_membership&.admin? %>
     <section class="card mb-4">
       <div class="card-body">
         <h2 class="h5 fw-semibold mb-3">Workspace name</h2>
@@ -21,30 +21,75 @@
     <div class="card-body">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="h5 fw-semibold mb-0">Members</h2>
-        <% if current_user.admin? %>
+        <% if current_membership&.admin? %>
           <%= link_to "Invite member", new_workspace_invitation_path, class: "btn btn-primary btn-sm" %>
         <% end %>
       </div>
 
       <ul class="list-group">
-        <% @members.each do |member| %>
-          <li class="list-group-item d-flex justify-content-between align-items-center">
-            <div>
-              <div class="fw-semibold"><%= member.email %></div>
-              <span class="badge text-bg-<%= member.admin? ? 'primary' : 'secondary' %> text-uppercase">
-                <%= member.role %>
-              </span>
-              <% if member == current_user %>
-                <span class="badge text-bg-light ms-1">You</span>
-              <% end %>
+        <% @memberships.each do |membership| %>
+          <% role_badge_class = { "owner" => "warning", "admin" => "primary", "member" => "secondary" }[membership.role] %>
+          <li class="list-group-item">
+            <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+              <div>
+                <div class="fw-semibold"><%= membership.user.email %></div>
+                <div class="d-flex gap-2 align-items-center mt-1">
+                  <span class="badge text-bg-<%= role_badge_class %> text-uppercase">
+                    <%= membership.role %>
+                  </span>
+                  <% if membership.user == current_user %>
+                    <span class="badge text-bg-light">You</span>
+                  <% end %>
+                </div>
+              </div>
+
+              <div class="d-flex gap-1 flex-wrap">
+                <%# Promote (admin only, target is member) %>
+                <% if current_membership&.admin? && membership.member? %>
+                  <%= button_to "Make admin",
+                                workspace_membership_path(membership, role: "admin"),
+                                method: :patch,
+                                class: "btn btn-sm btn-outline-secondary",
+                                form: { data: { turbo_confirm: "Promote #{membership.user.email} to admin?" } } %>
+                <% end %>
+
+                <%# Demote (admin only, target is admin and not owner) %>
+                <% if current_membership&.admin? && membership.role == "admin" %>
+                  <%= button_to "Demote",
+                                workspace_membership_path(membership, role: "member"),
+                                method: :patch,
+                                class: "btn btn-sm btn-outline-secondary",
+                                form: { data: { turbo_confirm: "Demote #{membership.user.email} to member?" } } %>
+                <% end %>
+
+                <%# Transfer ownership (owner only, target is admin and not self) %>
+                <% if current_membership&.owner? && membership.role == "admin" && membership.user != current_user %>
+                  <%= button_to "Transfer ownership",
+                                workspace_membership_path(membership, role: "owner"),
+                                method: :patch,
+                                class: "btn btn-sm btn-outline-warning",
+                                form: { data: { turbo_confirm: "Transfer ownership of this workspace to #{membership.user.email}? You'll be demoted to admin." } } %>
+                <% end %>
+
+                <%# Remove (admin only, target is not owner and not self) %>
+                <% if current_membership&.admin? && !membership.owner? && membership.user != current_user %>
+                  <%= button_to "Remove",
+                                workspace_membership_path(membership),
+                                method: :delete,
+                                class: "btn btn-sm btn-outline-danger",
+                                form: { data: { turbo_confirm: "Remove #{membership.user.email} from #{@workspace.name}?" } } %>
+                <% end %>
+
+                <%# Leave (self, not owner) %>
+                <% if membership.user == current_user && !membership.owner? %>
+                  <%= button_to "Leave workspace",
+                                workspace_membership_path(membership),
+                                method: :delete,
+                                class: "btn btn-sm btn-outline-danger",
+                                form: { data: { turbo_confirm: "Leave #{@workspace.name}? You'll lose access to its folders and files." } } %>
+                <% end %>
+              </div>
             </div>
-            <% if current_user.admin? && member != current_user %>
-              <%= button_to "Remove",
-                            workspace_member_path(member),
-                            method: :delete,
-                            class: "btn btn-outline-danger btn-sm",
-                            form: { data: { turbo_confirm: "Remove #{member.email} from #{@workspace.name}? Their folders and files stay in the workspace." } } %>
-            <% end %>
           </li>
         <% end %>
       </ul>

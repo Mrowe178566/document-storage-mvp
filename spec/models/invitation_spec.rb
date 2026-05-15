@@ -1,8 +1,9 @@
 require "rails_helper"
 
 RSpec.describe Invitation, type: :model do
-  let(:admin) { User.create!(email: "admin@example.com", password: "password") }
-  let(:workspace) { admin.workspace }
+  let(:setup) { create_owner_with_workspace(email: "admin@example.com") }
+  let(:admin) { setup[0] }
+  let(:workspace) { setup[1] }
 
   describe "associations" do
     it { should belong_to(:workspace) }
@@ -45,15 +46,22 @@ RSpec.describe Invitation, type: :model do
   end
 
   describe "#accept!" do
-    it "assigns the user to the workspace as a member and marks the invitation accepted" do
+    it "creates a member-role membership for the user and marks the invitation accepted" do
       invitation = workspace.invitations.create!(email: "new@example.com", invited_by: admin)
-      other_workspace = Workspace.create!(name: "Other")
-      user = User.create!(email: "new@example.com", password: "password", workspace: other_workspace, role: "member")
+      user = User.create!(email: "new@example.com", password: "password")
 
-      invitation.accept!(user)
+      expect { invitation.accept!(user) }.to change { Membership.count }.by(1)
 
-      expect(user.reload.workspace).to eq(workspace)
-      expect(user.role).to eq("member")
+      expect(user.workspaces.reload).to include(workspace)
+      expect(user.role_in(workspace)).to eq("member")
+      expect(invitation.reload).to be_accepted
+    end
+
+    it "is idempotent if the user is already a member" do
+      invitation = workspace.invitations.create!(email: "existing@example.com", invited_by: admin)
+      existing = create_member(workspace, email: "existing@example.com", role: "member")
+
+      expect { invitation.accept!(existing) }.not_to change { Membership.count }
       expect(invitation.reload).to be_accepted
     end
   end

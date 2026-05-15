@@ -1,8 +1,9 @@
 require "rails_helper"
 
 RSpec.describe StoredFile, type: :model do
-  let(:user) { User.create!(email: "test@example.com", password: "password") }
-  let(:workspace) { user.workspace }
+  let(:user_workspace) { create_owner_with_workspace }
+  let(:user) { user_workspace[0] }
+  let(:workspace) { user_workspace[1] }
   let(:folder) { workspace.folders.create!(name: "Test Folder", user: user) }
 
   def build_file(file_name:, content_type: "application/pdf", byte_size: 1.kilobyte, content: "x")

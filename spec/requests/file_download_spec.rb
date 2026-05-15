@@ -1,10 +1,12 @@
 require "rails_helper"
 
 RSpec.describe "File downloads", type: :request do
-  let(:user) { User.create!(email: "downloader@example.com", password: "password") }
-  let(:folder) { user.workspace.folders.create!(name: "Docs", user: user) }
+  let(:setup) { create_owner_with_workspace(email: "downloader@example.com") }
+  let(:user) { setup[0] }
+  let(:workspace) { setup[1] }
+  let(:folder) { workspace.folders.create!(name: "Docs", user: user) }
   let(:stored_file) do
-    file = user.workspace.stored_files.build(file_name: "sample.pdf", user: user, folder: folder)
+    file = workspace.stored_files.build(file_name: "sample.pdf", user: user, folder: folder)
     file.uploaded_file.attach(
       io: File.open(Rails.root.join("spec/fixtures/files/sample.pdf")),
       filename: "sample.pdf",

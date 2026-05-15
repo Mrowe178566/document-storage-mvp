@@ -1,8 +1,10 @@
 require "rails_helper"
 
 RSpec.describe "Deleting folders", type: :request do
-  let(:user) { User.create!(email: "owner@example.com", password: "password") }
-  let(:folder) { user.workspace.folders.create!(name: "Trash me", user: user) }
+  let(:setup) { create_owner_with_workspace(email: "owner@example.com") }
+  let(:user) { setup[0] }
+  let(:workspace) { setup[1] }
+  let(:folder) { workspace.folders.create!(name: "Trash me", user: user) }
 
   before { sign_in user }
 
@@ -17,7 +19,7 @@ RSpec.describe "Deleting folders", type: :request do
   end
 
   it "cascades deletion to stored files in the folder" do
-    file = user.workspace.stored_files.build(file_name: "doc.pdf", user: user, folder: folder)
+    file = workspace.stored_files.build(file_name: "doc.pdf", user: user, folder: folder)
     file.uploaded_file.attach(
       io: File.open(Rails.root.join("spec/fixtures/files/sample.pdf")),
       filename: "doc.pdf",

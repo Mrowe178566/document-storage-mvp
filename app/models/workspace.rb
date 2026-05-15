@@ -1,5 +1,6 @@
 class Workspace < ApplicationRecord
-  has_many :users, dependent: :destroy
+  has_many :memberships, dependent: :destroy
+  has_many :users, through: :memberships
   has_many :folders, dependent: :destroy
   has_many :stored_files, dependent: :destroy
   has_many :invitations, dependent: :destroy
@@ -9,12 +10,16 @@ class Workspace < ApplicationRecord
 
   before_validation :generate_slug, on: :create
 
+  def owner
+    memberships.find_by(role: "owner")&.user
+  end
+
   def admins
-    users.where(role: "admin")
+    User.joins(:memberships).where(memberships: { workspace_id: id, role: [ "owner", "admin" ] })
   end
 
   def members
-    users.where(role: "member")
+    User.joins(:memberships).where(memberships: { workspace_id: id, role: "member" })
   end
 
   private

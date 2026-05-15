@@ -1,24 +1,61 @@
 <% if user_signed_in? %>
   <nav class="fv-sidebar" role="navigation" aria-label="Main navigation">
 
+    <% if current_workspace %>
+      <!-- Workspace switcher -->
+      <div class="dropdown mb-3">
+        <button class="fv-workspace-badge"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                title="<%= current_workspace.name %> — click to switch">
+          <%= current_workspace.name.first.upcase %>
+        </button>
+        <ul class="dropdown-menu">
+          <li>
+            <h6 class="dropdown-header">
+              Currently in <strong><%= current_workspace.name %></strong>
+            </h6>
+          </li>
+          <% other_workspaces = current_user.workspaces.where.not(id: current_workspace.id).order(:name) %>
+          <% if other_workspaces.any? %>
+            <li><hr class="dropdown-divider"></li>
+            <li><h6 class="dropdown-header">Switch to</h6></li>
+            <% other_workspaces.each do |ws| %>
+              <li>
+                <%= button_to switch_workspace_path(ws),
+                              method: :post,
+                              class: "dropdown-item",
+                              form: { class: "d-inline w-100" } do %>
+                  <i class="bi bi-box-arrow-right me-2"></i><%= ws.name %>
+                <% end %>
+              </li>
+            <% end %>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
     <!-- Main nav icons -->
     <div class="fv-sidebar-nav">
       <%= link_to folders_path,
           class: "fv-nav-icon #{current_page?(folders_path) ? 'active' : ''}",
-          title: "Home" do %>
+          title: "Folders" do %>
         <i class="bi bi-house"></i>
       <% end %>
 
       <%= link_to new_folder_path,
           class: "fv-nav-icon #{current_page?(new_folder_path) ? 'active' : ''}",
-          title: "New Folder" do %>
+          title: "New folder" do %>
         <i class="bi bi-folder-plus"></i>
       <% end %>
 
-      <%= link_to workspace_path,
-          class: "fv-nav-icon #{current_page?(workspace_path) ? 'active' : ''}",
-          title: "Workspace settings" do %>
-        <i class="bi bi-people"></i>
+      <% if current_workspace %>
+        <%= link_to workspace_path,
+            class: "fv-nav-icon #{current_page?(workspace_path) ? 'active' : ''}",
+            title: "Workspace settings" do %>
+          <i class="bi bi-gear"></i>
+        <% end %>
       <% end %>
     </div>
 
@@ -26,7 +63,7 @@
     <div class="fv-sidebar-bottom">
       <%= link_to destroy_user_session_path,
           class: "fv-nav-icon",
-          title: "Sign Out",
+          title: "Sign out",
           data: { turbo_method: :delete } do %>
         <i class="bi bi-box-arrow-left"></i>
       <% end %>

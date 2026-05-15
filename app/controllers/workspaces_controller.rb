@@ -4,7 +4,9 @@ class WorkspacesController < ApplicationController
 
   def show
     @workspace = current_workspace
-    @members = @workspace.users.order(role: :desc, email: :asc)
+    @memberships = @workspace.memberships.includes(:user).to_a.sort_by do |m|
+      [ Membership::ROLES.reverse.index(m.role), m.user.email ]
+    end
     @pending_invitations = @workspace.invitations.pending.order(created_at: :desc)
     add_breadcrumb @workspace.name
   end

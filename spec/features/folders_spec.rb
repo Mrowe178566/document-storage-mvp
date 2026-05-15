@@ -1,14 +1,11 @@
 require "rails_helper"
 
 RSpec.describe "Folders", type: :feature do
-  let(:user) { User.create!(email: "test@example.com", password: "password123") }
+  let(:setup) { create_owner_with_workspace(email: "test@example.com") }
+  let(:user) { setup[0] }
+  let(:workspace) { setup[1] }
 
-  before do
-    visit new_user_session_path
-    fill_in "Email address", with: user.email
-    fill_in "Password", with: "password123"
-    click_button "Sign in"
-  end
+  before { sign_in user }
 
   describe "creating a folder" do
     it "allows a user to create a folder" do
@@ -22,10 +19,14 @@ RSpec.describe "Folders", type: :feature do
 
   describe "viewing folders" do
     it "shows only the current workspace's folders" do
-      user.workspace.folders.create!(name: "My Folder", user: user)
+      workspace.folders.create!(name: "My Folder", user: user)
 
-      other_user = User.create!(email: "other@example.com", password: "password123")
-      other_user.workspace.folders.create!(name: "Other Folder", user: other_user)
+      _, other_workspace = create_owner_with_workspace(
+        email: "other@example.com",
+        workspace_name: "Other Workspace"
+      )
+      other_user = other_workspace.users.first
+      other_workspace.folders.create!(name: "Other Folder", user: other_user)
 
       visit folders_path
       expect(page).to have_content("My Folder")

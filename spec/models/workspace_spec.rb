@@ -2,7 +2,8 @@ require "rails_helper"
 
 RSpec.describe Workspace, type: :model do
   describe "associations" do
-    it { should have_many(:users).dependent(:destroy) }
+    it { should have_many(:memberships).dependent(:destroy) }
+    it { should have_many(:users).through(:memberships) }
     it { should have_many(:folders).dependent(:destroy) }
     it { should have_many(:stored_files).dependent(:destroy) }
     it { should have_many(:invitations).dependent(:destroy) }
@@ -20,12 +21,21 @@ RSpec.describe Workspace, type: :model do
     end
   end
 
-  describe "#admins / #members" do
-    it "partitions users by role" do
-      workspace = Workspace.create!(name: "Test")
-      admin = User.create!(email: "admin@example.com", password: "password", workspace: workspace, role: "admin")
-      member = User.create!(email: "member@example.com", password: "password", workspace: workspace, role: "member")
-      expect(workspace.admins).to contain_exactly(admin)
+  describe "#owner / #admins / #members" do
+    let!(:workspace) { Workspace.create!(name: "Test") }
+    let!(:owner)  { create_member(workspace, email: "owner@example.com", role: "owner") }
+    let!(:admin)  { create_member(workspace, email: "admin@example.com", role: "admin") }
+    let!(:member) { create_member(workspace, email: "member@example.com", role: "member") }
+
+    it "#owner returns the user with role=owner" do
+      expect(workspace.owner).to eq(owner)
+    end
+
+    it "#admins returns owners and admins" do
+      expect(workspace.admins).to contain_exactly(owner, admin)
+    end
+
+    it "#members returns only role=member users" do
       expect(workspace.members).to contain_exactly(member)
     end
   end

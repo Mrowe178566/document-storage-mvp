@@ -2,7 +2,11 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  belongs_to :workspace
+  # Virtual attribute used during signup to name the user's first workspace.
+  attr_accessor :workspace_name
+
+  has_many :memberships, dependent: :destroy
+  has_many :workspaces, through: :memberships
 
   has_many :folders, dependent: :destroy
   has_many :stored_files, dependent: :destroy
@@ -11,15 +15,25 @@ class User < ApplicationRecord
            foreign_key: :invited_by_id,
            dependent: :destroy
 
-  enum :role, { member: "member", admin: "admin" }, default: "member"
+  def membership_for(workspace)
+    return nil unless workspace
+    memberships.find_by(workspace_id: workspace.id)
+  end
 
-  before_validation :setup_default_workspace, on: :create, unless: -> { workspace }
+  def role_in(workspace)
+    membership_for(workspace)&.role
+  end
 
-  private
+  def owner_of?(workspace)
+    role_in(workspace) == "owner"
+  end
 
-  def setup_default_workspace
-    handle = email.to_s.split("@").first.presence || "user"
-    self.workspace = Workspace.new(name: "#{handle.titleize}'s Workspace")
-    self.role = "admin"
+  def admin_of?(workspace)
+    role = role_in(workspace)
+    role == "owner" || role == "admin"
+  end
+
+  def member_of?(workspace)
+    membership_for(workspace).present?
   end
 end

@@ -1,8 +1,10 @@
 require "rails_helper"
 
 RSpec.describe "Uploading files", type: :feature do
-  let(:user) { User.create!(email: "uploader@example.com", password: "password") }
-  let(:folder) { user.workspace.folders.create!(name: "Docs", user: user) }
+  let(:setup) { create_owner_with_workspace(email: "uploader@example.com") }
+  let(:user) { setup[0] }
+  let(:workspace) { setup[1] }
+  let(:folder) { workspace.folders.create!(name: "Docs", user: user) }
   let(:fixture_path) { Rails.root.join("spec/fixtures/files/sample.pdf") }
 
   before { sign_in user }
@@ -18,7 +20,7 @@ RSpec.describe "Uploading files", type: :feature do
 
     uploaded = folder.stored_files.last
     expect(uploaded.user).to eq(user)
-    expect(uploaded.workspace).to eq(user.workspace)
+    expect(uploaded.workspace).to eq(workspace)
     expect(uploaded.uploaded_file).to be_attached
   end
 

@@ -9,11 +9,18 @@ class InvitationAcceptancesController < ApplicationController
   def update
     @user = User.new(user_params)
     @user.email = @invitation.email
-    @user.workspace = @invitation.workspace
-    @user.role = "member"
 
-    if @user.save
-      @invitation.update!(accepted_at: Time.current)
+    saved = User.transaction do
+      if @user.save
+        @invitation.accept!(@user)
+        session[:current_workspace_id] = @invitation.workspace.id
+        true
+      else
+        false
+      end
+    end
+
+    if saved
       sign_in(@user)
       redirect_to authenticated_root_path,
                   notice: "Welcome to #{@invitation.workspace.name}."
