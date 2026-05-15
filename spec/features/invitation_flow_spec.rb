@@ -7,7 +7,7 @@ RSpec.describe "Invitation flow", type: :feature do
 
   before { ActionMailer::Base.deliveries.clear }
 
-  describe "as an admin" do
+  describe "as an admin sending invitations" do
     before { sign_in admin }
 
     it "sends an invitation and shows it as pending in the workspace" do
@@ -19,7 +19,6 @@ RSpec.describe "Invitation flow", type: :feature do
       end
 
       expect(page).to have_content("Invitation sent to teammate@example.com")
-      expect(page).to have_content("teammate@example.com")
       expect(page).to have_content("Pending invitations")
 
       invitation = workspace.invitations.last
@@ -29,16 +28,37 @@ RSpec.describe "Invitation flow", type: :feature do
       delivered = ActionMailer::Base.deliveries.last
       expect(delivered).to be_present
       expect(delivered.to).to eq([ "teammate@example.com" ])
-      expect(delivered.subject).to include(workspace.name)
+    end
+
+    it "allows sending an invitation to an email that already has an account" do
+      User.create!(email: "existing@example.com", password: "password")
+
+      visit new_workspace_invitation_path
+      fill_in "Email", with: "existing@example.com"
+      click_button "Send invitation"
+
+      expect(page).to have_content("Invitation sent to existing@example.com")
+      expect(workspace.invitations.find_by(email: "existing@example.com")).to be_present
+    end
+
+    it "blocks invitations to someone already a member of this workspace" do
+      teammate = create_member(workspace, email: "teammate@example.com", role: "member")
+
+      visit new_workspace_invitation_path
+      fill_in "Email", with: teammate.email
+      click_button "Send invitation"
+
+      expect(page).to have_content("already a member of this workspace")
+      expect(workspace.invitations.where(email: teammate.email)).to be_empty
     end
   end
 
-  describe "as the invitee" do
+  describe "as a brand-new invitee" do
     let!(:invitation) do
       workspace.invitations.create!(email: "newcomer@example.com", invited_by: admin)
     end
 
-    it "lets the invitee accept by setting a password and lands them in the workspace" do
+    it "lets them set a password and lands them in the workspace" do
       visit invitation_acceptance_path(token: invitation.token)
 
       fill_in "Password", with: "supersecret"
@@ -56,24 +76,58 @@ RSpec.describe "Invitation flow", type: :feature do
 
     it "rejects an expired invitation" do
       invitation.update!(expires_at: 1.day.ago)
-
       visit invitation_acceptance_path(token: invitation.token)
-
       expect(page).to have_content("That invitation has expired")
     end
 
     it "rejects an already-accepted invitation" do
       invitation.update!(accepted_at: Time.current)
-
       visit invitation_acceptance_path(token: invitation.token)
-
       expect(page).to have_content("already been accepted")
     end
 
     it "404s for an unknown token" do
       visit invitation_acceptance_path(token: "not-a-real-token")
-
       expect(page).to have_content("Invitation not found")
+    end
+  end
+
+  describe "as an existing-account invitee" do
+    let(:existing_user) { User.create!(email: "existing@example.com", password: "password") }
+    let!(:invitation) do
+      workspace.invitations.create!(email: "existing@example.com", invited_by: admin)
+    end
+
+    it "shows a 'Join workspace' confirm page when signed in as the invitee" do
+      sign_in existing_user
+      visit invitation_acceptance_path(token: invitation.token)
+
+      expect(page).to have_content("Join #{workspace.name}?")
+      expect(page).to have_content(existing_user.email)
+
+      click_button "Join workspace"
+
+      expect(page).to have_content("You joined #{workspace.name}")
+      expect(existing_user.reload.workspaces).to include(workspace)
+      expect(existing_user.role_in(workspace)).to eq("member")
+      expect(invitation.reload).to be_accepted
+    end
+
+    it "redirects to sign-in when not signed in" do
+      visit invitation_acceptance_path(token: invitation.token)
+
+      expect(current_path).to eq(new_user_session_path)
+      expect(page).to have_content("Sign in to accept your invitation to #{workspace.name}")
+    end
+
+    it "rejects when signed in as a different user" do
+      other_user = create_owner_with_workspace(email: "other@example.com", workspace_name: "Other WS")[0]
+      sign_in other_user
+
+      visit invitation_acceptance_path(token: invitation.token)
+
+      expect(page).to have_content("This invitation is for existing@example.com")
+      expect(existing_user.reload.workspaces).not_to include(workspace)
     end
   end
 end

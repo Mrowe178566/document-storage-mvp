@@ -12,9 +12,9 @@ class InvitationsController < ApplicationController
     @invitation = current_workspace.invitations.build(invitation_params)
     @invitation.invited_by = current_user
 
-    if existing_user?
+    if already_member?
       redirect_to new_workspace_invitation_path,
-                  alert: "An account already exists for #{@invitation.email}."
+                  alert: "#{@invitation.email} is already a member of this workspace."
       return
     end
 
@@ -33,7 +33,9 @@ class InvitationsController < ApplicationController
     params.require(:invitation).permit(:email)
   end
 
-  def existing_user?
-    User.exists?(email: @invitation.email&.downcase)
+  def already_member?
+    user = User.find_by(email: @invitation.email&.downcase)
+    return false unless user
+    current_workspace.users.exists?(id: user.id)
   end
 end
