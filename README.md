@@ -2,7 +2,7 @@
 
 File Vault is a Rails 8 multi-tenant document storage app. A user signs up by naming their workspace and becomes its owner; admins of a workspace can invite teammates by email, every member shares the same folders and files, and a single user can belong to several workspaces and switch between them. Files are stored on Cloudinary, search is folder-scoped, and bulk-delete is built in. I built it to practice multi-tenant data modeling, role-based authorization at the query layer, file uploads through Active Storage, an invitation flow with ActionMailer, and deployment-ready Rails architecture.
 
-**Live demo:** _[add Render URL here]_
+**Live demo:** https://document-storage-mvp.onrender.com
 
 ---
 
