@@ -20,6 +20,10 @@ Rails.application.routes.draw do
       post :switch, on: :member, to: "workspaces/switches#create"
     end
 
+    get "recent",  to: "recent_activities#index", as: :recent_activities
+    get "team",    to: "team#index",              as: :team
+    get "pinned",  to: "pins#index",              as: :pins
+
     root "folders#index", as: :authenticated_root
   end
 

@@ -1,0 +1,42 @@
+<div class="container py-4">
+
+  <header class="mb-4">
+    <h1 class="fw-bold mb-1">Recent activity</h1>
+    <p class="text-muted mb-0">
+      Everything that's happened in <%= current_workspace.name %>, newest first.
+    </p>
+  </header>
+
+  <div class="card border-0 fv-card">
+    <div class="card-body p-4">
+      <% if @events.any? %>
+        <ul class="list-unstyled mb-0">
+          <% @events.each_with_index do |event, idx| %>
+            <li class="d-flex gap-3 align-items-start <%= 'pt-3 border-top' if idx > 0 %> <%= 'pb-3' unless idx == @events.size - 1 %>">
+              <div class="fv-activity-icon">
+                <i class="bi <%= event.icon %>"></i>
+              </div>
+              <div class="flex-grow-1">
+                <div>
+                  <strong><%= event.actor_email&.split("@")&.first || "Someone" %></strong>
+                  <%= sanitize event.message, tags: %w[strong em] %>
+                </div>
+                <div class="text-muted small mt-1">
+                  <%= time_ago_in_words(event.timestamp) %> ago
+                  <span class="mx-1">·</span>
+                  <%= event.timestamp.strftime("%b %-d, %Y at %-l:%M %p") %>
+                </div>
+              </div>
+            </li>
+          <% end %>
+        </ul>
+      <% else %>
+        <div class="text-center py-5 text-muted">
+          <i class="bi bi-clock-history" style="font-size: 2.5rem;"></i>
+          <p class="mt-3 mb-0">No activity in this workspace yet.</p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+</div>

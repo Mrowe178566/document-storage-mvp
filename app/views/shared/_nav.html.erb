@@ -1,20 +1,29 @@
 <% if user_signed_in? %>
   <nav class="fv-sidebar" role="navigation" aria-label="Main navigation">
 
+    <%# ─── Workspace switcher header ─────────────────────────── %>
     <% if current_workspace %>
-      <!-- Workspace switcher -->
-      <div class="dropdown mb-3">
-        <button class="fv-workspace-badge"
+      <div class="fv-sidebar-workspace dropdown">
+        <button class="fv-workspace-trigger"
                 type="button"
                 data-bs-toggle="dropdown"
-                aria-expanded="false"
-                title="<%= current_workspace.name %> — click to switch">
-          <%= current_workspace.name.first.upcase %>
+                aria-expanded="false">
+          <div class="fv-workspace-badge">
+            <%= current_workspace.name.first.upcase %>
+          </div>
+          <div class="fv-workspace-meta">
+            <div class="fv-workspace-name"><%= current_workspace.name %></div>
+            <div class="fv-workspace-role">
+              <%= current_membership&.role&.capitalize || "Member" %>
+            </div>
+          </div>
+          <i class="bi bi-chevron-expand fv-workspace-caret"></i>
         </button>
-        <ul class="dropdown-menu">
+
+        <ul class="dropdown-menu shadow">
           <li>
             <h6 class="dropdown-header">
-              Currently in <strong><%= current_workspace.name %></strong>
+              In <strong><%= current_workspace.name %></strong>
             </h6>
           </li>
           <% other_workspaces = current_user.workspaces.where.not(id: current_workspace.id).order(:name) %>
@@ -32,61 +41,84 @@
               </li>
             <% end %>
           <% end %>
+          <li><hr class="dropdown-divider"></li>
+          <li>
+            <%= link_to new_workspace_path, class: "dropdown-item" do %>
+              <i class="bi bi-plus-circle me-2"></i>Create new workspace
+            <% end %>
+          </li>
         </ul>
       </div>
     <% end %>
 
-    <!-- Main nav icons -->
+    <%# ─── Primary nav ────────────────────────────────────────── %>
     <div class="fv-sidebar-nav">
+      <%= link_to authenticated_root_path,
+          class: "fv-nav-item #{'active' if current_page?(authenticated_root_path) || current_page?(folders_path)}" do %>
+        <i class="bi bi-grid-1x2 fv-nav-icon"></i>
+        <span class="fv-nav-label">Dashboard</span>
+      <% end %>
+
       <%= link_to folders_path,
-          class: "fv-nav-icon #{current_page?(folders_path) ? 'active' : ''}",
-          title: "Folders" do %>
-        <i class="bi bi-house"></i>
+          class: "fv-nav-item #{'active' if controller_name == 'folders' && action_name != 'index'}" do %>
+        <i class="bi bi-folder fv-nav-icon"></i>
+        <span class="fv-nav-label">Folders</span>
       <% end %>
 
-      <%= link_to new_folder_path,
-          class: "fv-nav-icon #{current_page?(new_folder_path) ? 'active' : ''}",
-          title: "New folder" do %>
-        <i class="bi bi-folder-plus"></i>
+      <%= link_to recent_activities_path,
+          class: "fv-nav-item #{'active' if current_page?(recent_activities_path)}" do %>
+        <i class="bi bi-clock-history fv-nav-icon"></i>
+        <span class="fv-nav-label">Recent</span>
       <% end %>
 
-      <% if current_workspace %>
-        <div class="dropend">
-          <button class="fv-nav-icon <%= 'active' if current_page?(workspace_path) || current_page?(new_workspace_path) %>"
-                  type="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                  title="Workspace menu">
-            <i class="bi bi-gear"></i>
-          </button>
-          <ul class="dropdown-menu shadow">
-            <li>
-              <%= link_to workspace_path, class: "dropdown-item" do %>
-                <i class="bi bi-sliders me-2"></i>Workspace settings
-              <% end %>
-            </li>
-            <li><hr class="dropdown-divider"></li>
-            <li>
-              <%= link_to new_workspace_path, class: "dropdown-item" do %>
-                <i class="bi bi-plus-circle me-2"></i>Create new workspace
-              <% end %>
-            </li>
-          </ul>
-        </div>
+      <%= link_to pins_path,
+          class: "fv-nav-item #{'active' if current_page?(pins_path)}" do %>
+        <i class="bi bi-pin-angle fv-nav-icon"></i>
+        <span class="fv-nav-label">Pinned</span>
+      <% end %>
+
+      <%= link_to team_path,
+          class: "fv-nav-item #{'active' if current_page?(team_path)}" do %>
+        <i class="bi bi-people fv-nav-icon"></i>
+        <span class="fv-nav-label">Team</span>
+      <% end %>
+
+      <%= link_to workspace_path,
+          class: "fv-nav-item #{'active' if current_page?(workspace_path)}" do %>
+        <i class="bi bi-sliders fv-nav-icon"></i>
+        <span class="fv-nav-label">Workspace settings</span>
       <% end %>
     </div>
 
-    <!-- Bottom: sign out + avatar -->
-    <div class="fv-sidebar-bottom">
-      <%= link_to destroy_user_session_path,
-          class: "fv-nav-icon",
-          title: "Sign out",
-          data: { turbo_method: :delete } do %>
-        <i class="bi bi-box-arrow-left"></i>
-      <% end %>
-      <div class="fv-avatar" title="<%= current_user.email %>">
-        <%= display_name(current_user).first.upcase %>
-      </div>
+    <%# ─── User section at bottom ─────────────────────────────── %>
+    <div class="fv-sidebar-user dropdown">
+      <button class="fv-user-trigger"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false">
+        <div class="fv-user-avatar">
+          <%= display_name(current_user).first.upcase %>
+        </div>
+        <div class="fv-user-meta">
+          <div class="fv-user-email"><%= current_user.email %></div>
+        </div>
+        <i class="bi bi-three-dots-vertical fv-user-caret"></i>
+      </button>
+
+      <ul class="dropdown-menu dropdown-menu-end shadow">
+        <li>
+          <h6 class="dropdown-header"><%= current_user.email %></h6>
+        </li>
+        <li><hr class="dropdown-divider"></li>
+        <li>
+          <%= button_to destroy_user_session_path,
+                        method: :delete,
+                        class: "dropdown-item",
+                        form: { class: "d-inline w-100" } do %>
+            <i class="bi bi-box-arrow-left me-2"></i>Sign out
+          <% end %>
+        </li>
+      </ul>
     </div>
 
   </nav>

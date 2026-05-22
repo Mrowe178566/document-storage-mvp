@@ -1,0 +1,75 @@
+<div class="container py-4">
+
+  <header class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-4">
+    <div>
+      <h1 class="fw-bold mb-1">Team</h1>
+      <p class="text-muted mb-0">
+        Everyone with access to <%= current_workspace.name %>.
+      </p>
+    </div>
+    <% if current_membership&.admin? %>
+      <%= link_to new_workspace_invitation_path, class: "btn btn-primary" do %>
+        <i class="bi bi-person-plus me-1"></i>Invite teammate
+      <% end %>
+    <% end %>
+  </header>
+
+  <div class="card border-0 fv-card mb-4">
+    <div class="card-body p-0">
+      <ul class="list-group list-group-flush">
+        <% @memberships.each do |membership| %>
+          <% role_badge = { "owner" => "warning", "admin" => "primary", "member" => "secondary" }[membership.role] %>
+          <li class="list-group-item">
+            <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap py-2">
+              <div class="d-flex align-items-center gap-3">
+                <div class="fv-team-avatar">
+                  <%= membership.user.email.first.upcase %>
+                </div>
+                <div>
+                  <div class="fw-semibold"><%= membership.user.email %></div>
+                  <div class="d-flex gap-2 align-items-center mt-1">
+                    <span class="badge text-bg-<%= role_badge %> text-uppercase">
+                      <%= membership.role %>
+                    </span>
+                    <% if membership.user == current_user %>
+                      <span class="badge text-bg-light text-muted">You</span>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+
+  <% if @pending_invitations.any? && current_membership&.admin? %>
+    <h2 class="h5 fw-semibold mb-3">Pending invitations</h2>
+    <div class="card border-0 fv-card">
+      <div class="card-body p-0">
+        <ul class="list-group list-group-flush">
+          <% @pending_invitations.each do |invitation| %>
+            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2">
+              <div>
+                <div class="fw-semibold"><%= invitation.email %></div>
+                <div class="small text-muted">
+                  Invited <%= time_ago_in_words(invitation.created_at) %> ago
+                  by <%= invitation.invited_by.email %>
+                </div>
+              </div>
+              <span class="badge text-bg-light text-muted">Pending</span>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+
+  <% if current_membership&.admin? %>
+    <p class="text-muted small mt-3 mb-0">
+      Manage member roles in <%= link_to "Workspace settings", workspace_path %>.
+    </p>
+  <% end %>
+
+</div>
