@@ -51,17 +51,15 @@
       <% end %>
 
       <% if current_workspace %>
-        <div class="dropdown">
-          <button type="button"
-                  class="fv-nav-icon <%= 'active' if current_page?(workspace_path) || current_page?(new_workspace_path) %>"
+        <div class="dropend">
+          <button class="fv-nav-icon <%= 'active' if current_page?(workspace_path) || current_page?(new_workspace_path) %>"
+                  type="button"
                   data-bs-toggle="dropdown"
-                  data-bs-offset="8,4"
-                  data-bs-placement="right"
                   aria-expanded="false"
                   title="Workspace menu">
             <i class="bi bi-gear"></i>
           </button>
-          <ul class="dropdown-menu">
+          <ul class="dropdown-menu shadow">
             <li>
               <%= link_to workspace_path, class: "dropdown-item" do %>
                 <i class="bi bi-sliders me-2"></i>Workspace settings
