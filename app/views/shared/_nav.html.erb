@@ -51,11 +51,30 @@
       <% end %>
 
       <% if current_workspace %>
-        <%= link_to workspace_path,
-            class: "fv-nav-icon #{current_page?(workspace_path) ? 'active' : ''}",
-            title: "Workspace settings" do %>
-          <i class="bi bi-gear"></i>
-        <% end %>
+        <div class="dropdown">
+          <button type="button"
+                  class="fv-nav-icon <%= 'active' if current_page?(workspace_path) || current_page?(new_workspace_path) %>"
+                  data-bs-toggle="dropdown"
+                  data-bs-offset="8,4"
+                  data-bs-placement="right"
+                  aria-expanded="false"
+                  title="Workspace menu">
+            <i class="bi bi-gear"></i>
+          </button>
+          <ul class="dropdown-menu">
+            <li>
+              <%= link_to workspace_path, class: "dropdown-item" do %>
+                <i class="bi bi-sliders me-2"></i>Workspace settings
+              <% end %>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <%= link_to new_workspace_path, class: "dropdown-item" do %>
+                <i class="bi bi-plus-circle me-2"></i>Create new workspace
+              <% end %>
+            </li>
+          </ul>
+        </div>
       <% end %>
     </div>
 

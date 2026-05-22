@@ -19,6 +19,25 @@ class WorkspacesController < ApplicationController
     end
   end
 
+  def new
+    @workspace = Workspace.new
+    add_breadcrumb "New workspace"
+  end
+
+  def create
+    result = Workspaces::Create.call(user: current_user, name: workspace_params[:name])
+
+    if result.success?
+      session[:current_workspace_id] = result.workspace.id
+      redirect_to authenticated_root_path,
+                  notice: "Workspace #{result.workspace.name} created. You're now in it."
+    else
+      @workspace = Workspace.new(name: workspace_params[:name])
+      flash.now[:alert] = result.error
+      render :new, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def workspace_params

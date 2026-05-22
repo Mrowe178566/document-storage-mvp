@@ -11,18 +11,22 @@ class Users::RegistrationsController < Devise::RegistrationsController
       return
     end
 
-    saved = User.transaction do
+    saved_user_and_workspace = User.transaction do
       if resource.save
-        workspace = Workspace.create!(name: resource.workspace_name)
-        Membership.create!(user: resource, workspace: workspace, role: "owner")
-        session[:current_workspace_id] = workspace.id
-        true
+        result = Workspaces::Create.call(user: resource, name: resource.workspace_name)
+        if result.success?
+          session[:current_workspace_id] = result.workspace.id
+          true
+        else
+          resource.errors.add(:workspace_name, result.error)
+          raise ActiveRecord::Rollback
+        end
       else
         false
       end
     end
 
-    if saved
+    if saved_user_and_workspace
       sign_up(resource_name, resource)
       redirect_to after_sign_up_path_for(resource),
                   notice: "Welcome to File Vault! Your workspace #{resource.workspace_name} is ready."

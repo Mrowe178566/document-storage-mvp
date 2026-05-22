@@ -15,7 +15,7 @@ Rails.application.routes.draw do
       resources :memberships, only: [ :update, :destroy ], module: :workspaces
     end
 
-    resources :workspaces, only: [] do
+    resources :workspaces, only: [ :new, :create ] do
       post :switch, on: :member, to: "workspaces/switches#create"
     end
 

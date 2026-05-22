@@ -1,0 +1,43 @@
+<div class="fv-auth-wrapper">
+  <div class="fv-auth-card">
+
+    <div class="fv-auth-logo">
+      <%= image_tag "vault-logo.png", alt: "File Vault", width: 48, height: 48 %>
+    </div>
+
+    <h1 class="fv-auth-title">Create a new workspace</h1>
+    <p class="fv-auth-subtitle">
+      You'll become the Owner. You can invite teammates after it's created.
+    </p>
+
+    <% if flash[:alert].present? %>
+      <div class="alert alert-danger py-2 mb-3" role="alert">
+        <%= flash[:alert] %>
+      </div>
+    <% end %>
+
+    <%= form_with model: @workspace, url: workspaces_path, local: true do |form| %>
+      <div class="fv-form-group">
+        <%= form.label :name, "Workspace name", class: "fv-label" %>
+        <%= form.text_field :name,
+                            required: true,
+                            autofocus: true,
+                            placeholder: "e.g., Side project, Family, Client work",
+                            class: "fv-input" %>
+      </div>
+
+      <%= form.submit "Create workspace", class: "fv-btn-primary w-100 mt-3" %>
+    <% end %>
+
+    <div class="fv-auth-links text-center">
+      <% if current_workspace %>
+        <%= link_to "Cancel and go back to #{current_workspace.name}",
+                    authenticated_root_path,
+                    class: "text-muted small" %>
+      <% else %>
+        <%= link_to "Cancel", authenticated_root_path, class: "text-muted small" %>
+      <% end %>
+    </div>
+
+  </div>
+</div>
