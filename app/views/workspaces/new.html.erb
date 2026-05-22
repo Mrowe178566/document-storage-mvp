@@ -1,43 +1,39 @@
-<div class="fv-auth-wrapper">
-  <div class="fv-auth-card">
+<div class="container py-5" style="max-width: 560px;">
 
-    <div class="fv-auth-logo">
-      <%= image_tag "vault-logo.png", alt: "File Vault", width: 48, height: 48 %>
-    </div>
-
-    <h1 class="fv-auth-title">Create a new workspace</h1>
-    <p class="fv-auth-subtitle">
+  <header class="mb-4">
+    <h1 class="fw-bold mb-1">Create a new workspace</h1>
+    <p class="text-muted mb-0">
       You'll become the Owner. You can invite teammates after it's created.
     </p>
+  </header>
 
-    <% if flash[:alert].present? %>
-      <div class="alert alert-danger py-2 mb-3" role="alert">
-        <%= flash[:alert] %>
-      </div>
-    <% end %>
+  <% if flash[:alert].present? %>
+    <div class="alert alert-danger py-2 mb-3" role="alert">
+      <%= flash[:alert] %>
+    </div>
+  <% end %>
 
-    <%= form_with model: @workspace, url: workspaces_path, local: true do |form| %>
-      <div class="fv-form-group">
-        <%= form.label :name, "Workspace name", class: "fv-label" %>
-        <%= form.text_field :name,
-                            required: true,
-                            autofocus: true,
-                            placeholder: "e.g., Side project, Family, Client work",
-                            class: "fv-input" %>
-      </div>
+  <div class="card shadow-sm">
+    <div class="card-body p-4">
+      <%= form_with model: @workspace, url: workspaces_path, local: true do |form| %>
+        <div class="mb-3">
+          <%= form.label :name, "Workspace name", class: "form-label fw-semibold" %>
+          <%= form.text_field :name,
+                              required: true,
+                              autofocus: true,
+                              placeholder: "e.g., Side project, Family, Client work",
+                              class: "form-control form-control-lg" %>
+          <div class="form-text">
+            This name will be shown to teammates you invite.
+          </div>
+        </div>
 
-      <%= form.submit "Create workspace", class: "fv-btn-primary w-100 mt-3" %>
-    <% end %>
-
-    <div class="fv-auth-links text-center">
-      <% if current_workspace %>
-        <%= link_to "Cancel and go back to #{current_workspace.name}",
-                    authenticated_root_path,
-                    class: "text-muted small" %>
-      <% else %>
-        <%= link_to "Cancel", authenticated_root_path, class: "text-muted small" %>
+        <div class="d-flex justify-content-end align-items-center gap-2 mt-4">
+          <%= link_to "Cancel", authenticated_root_path, class: "btn btn-link text-muted" %>
+          <%= form.submit "Create workspace", class: "btn btn-primary px-4" %>
+        </div>
       <% end %>
     </div>
-
   </div>
+
 </div>
