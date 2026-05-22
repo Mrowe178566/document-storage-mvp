@@ -5,22 +5,33 @@ class Workspaces::MembershipsController < ApplicationController
   # PATCH /workspace/memberships/:id
   # Body: role=admin (promote), role=member (demote), role=owner (transfer)
   def update
-    case params[:role]
-    when "admin"  then promote_to_admin
-    when "member" then demote_to_member
-    when "owner"  then transfer_ownership
+    authorize @membership
+
+    result =
+      case params[:role]
+      when "admin"  then Memberships::Promote.call(membership: @membership)
+      when "member" then Memberships::Demote.call(membership: @membership)
+      when "owner"  then transfer_result
+      else
+        return redirect_to(workspace_path, alert: "Unknown role action.")
+      end
+
+    if result.success?
+      redirect_to workspace_path, notice: success_message_for(params[:role], result)
     else
-      redirect_to workspace_path, alert: "Unknown role action."
+      redirect_to workspace_path, alert: result.error
     end
   end
 
   # DELETE /workspace/memberships/:id
   # Either a member self-leaving or an admin removing someone else.
   def destroy
+    authorize @membership
+
     if @membership.user == current_user
-      self_leave
+      handle_self_leave
     else
-      admin_remove
+      handle_admin_remove
     end
   end
 
@@ -30,64 +41,41 @@ class Workspaces::MembershipsController < ApplicationController
     @membership = current_workspace.memberships.find(params[:id])
   end
 
-  def promote_to_admin
-    return deny_admin_action unless current_membership&.admin?
-    return redirect_to(workspace_path, alert: "That member can't be promoted.") unless @membership.member?
-
-    @membership.update!(role: "admin")
-    redirect_to workspace_path, notice: "#{@membership.user.email} is now an admin."
+  def transfer_result
+    Memberships::Transfer.call(
+      current_owner_membership: current_membership,
+      new_owner_membership: @membership
+    )
   end
 
-  def demote_to_member
-    return deny_admin_action unless current_membership&.admin?
-    return redirect_to(workspace_path, alert: "The workspace owner can't be demoted.") if @membership.owner?
-    return redirect_to(workspace_path, alert: "Nothing to demote.") unless @membership.role == "admin"
-
-    @membership.update!(role: "member")
-    redirect_to workspace_path, notice: "#{@membership.user.email} is now a member."
-  end
-
-  def transfer_ownership
-    return redirect_to(workspace_path, alert: "Only the owner can transfer ownership.") unless current_membership&.owner?
-    return redirect_to(workspace_path, alert: "You can only transfer ownership to another admin.") unless @membership.admin? && !@membership.owner?
-
-    Membership.transaction do
-      current_membership.update!(role: "admin")
-      @membership.update!(role: "owner")
+  def success_message_for(action, result)
+    case action
+    when "admin"  then "#{@membership.user.email} is now an admin."
+    when "member" then "#{@membership.user.email} is now a member."
+    when "owner"  then "Ownership transferred to #{result.new_owner.email}."
     end
-    redirect_to workspace_path, notice: "Ownership transferred to #{@membership.user.email}."
   end
 
-  def self_leave
-    if @membership.owner?
-      return redirect_to(workspace_path, alert: "Transfer ownership before leaving the workspace.")
+  def handle_self_leave
+    result = Memberships::Leave.call(membership: @membership, user: current_user)
+
+    if result.success?
+      session[:current_workspace_id] = result.next_workspace&.id
+      redirect_to authenticated_root_path,
+                  notice: "You left #{@membership.workspace.name}."
+    else
+      redirect_to workspace_path, alert: result.error
     end
+  end
 
-    if current_user.workspaces.count <= 1
-      return redirect_to(workspace_path,
-                         alert: "You can't leave your only workspace. Join another first.")
+  def handle_admin_remove
+    result = Memberships::Remove.call(membership: @membership)
+
+    if result.success?
+      redirect_to workspace_path,
+                  notice: "#{result.removed_user.email} was removed from the workspace."
+    else
+      redirect_to workspace_path, alert: result.error
     end
-
-    @membership.destroy
-    switch_to_another_workspace
-    redirect_to authenticated_root_path,
-                notice: "You left #{@membership.workspace.name}."
-  end
-
-  def admin_remove
-    return deny_admin_action unless current_membership&.admin?
-    return redirect_to(workspace_path, alert: "The workspace owner can't be removed.") if @membership.owner?
-
-    @membership.destroy
-    redirect_to workspace_path, notice: "#{@membership.user.email} was removed from the workspace."
-  end
-
-  def deny_admin_action
-    redirect_to workspace_path, alert: "Only workspace admins can do that."
-  end
-
-  def switch_to_another_workspace
-    next_workspace = current_user.workspaces.where.not(id: current_workspace.id).order(:created_at).first
-    session[:current_workspace_id] = next_workspace&.id
   end
 end

@@ -1,9 +1,9 @@
 class WorkspacesController < ApplicationController
   before_action :authenticate_user!
-  before_action :require_workspace_admin, only: [ :update ]
 
   def show
     @workspace = current_workspace
+    authorize @workspace
     @memberships = @workspace.memberships.includes(:user).to_a.sort_by do |m|
       [ Membership::ROLES.reverse.index(m.role), m.user.email ]
     end
@@ -12,6 +12,7 @@ class WorkspacesController < ApplicationController
   end
 
   def update
+    authorize current_workspace
     if current_workspace.update(workspace_params)
       redirect_to workspace_path, notice: "Workspace updated."
     else
@@ -21,10 +22,28 @@ class WorkspacesController < ApplicationController
 
   def new
     @workspace = Workspace.new
+    authorize @workspace
     add_breadcrumb "New workspace"
   end
 
+  def create
+    @workspace = Workspace.new(name: workspace_params[:name])
+    authorize @workspace
+
+    result = Workspaces::Create.call(user: current_user, name: workspace_params[:name])
+
+    if result.success?
+      session[:current_workspace_id] = result.workspace.id
+      redirect_to authenticated_root_path,
+                  notice: "Workspace #{result.workspace.name} created. You're now in it."
+    else
+      flash.now[:alert] = result.error
+      render :new, status: :unprocessable_entity
+    end
+  end
+
   def bootstrap
+    authorize current_workspace
     result = Workspaces::Bootstrap.call(workspace: current_workspace, user: current_user)
 
     if result.success?
@@ -37,20 +56,6 @@ class WorkspacesController < ApplicationController
       redirect_to folders_path, notice: message
     else
       redirect_to folders_path, alert: "Couldn't bootstrap workspace: #{result.error}"
-    end
-  end
-
-  def create
-    result = Workspaces::Create.call(user: current_user, name: workspace_params[:name])
-
-    if result.success?
-      session[:current_workspace_id] = result.workspace.id
-      redirect_to authenticated_root_path,
-                  notice: "Workspace #{result.workspace.name} created. You're now in it."
-    else
-      @workspace = Workspace.new(name: workspace_params[:name])
-      flash.now[:alert] = result.error
-      render :new, status: :unprocessable_entity
     end
   end
 

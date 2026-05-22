@@ -5,7 +5,7 @@
     <p class="text-muted mb-0">Workspace settings, members, and pending invitations.</p>
   </header>
 
-  <% if current_membership&.admin? %>
+  <% if policy(@workspace).update? %>
     <section class="card mb-4">
       <div class="card-body">
         <h2 class="h5 fw-semibold mb-3">Workspace name</h2>
@@ -21,14 +21,14 @@
     <div class="card-body">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="h5 fw-semibold mb-0">Members</h2>
-        <% if current_membership&.admin? %>
+        <% if policy(Invitation.new(workspace: @workspace)).create? %>
           <%= link_to "Invite member", new_workspace_invitation_path, class: "btn btn-primary btn-sm" %>
         <% end %>
       </div>
 
       <ul class="list-group">
         <% @memberships.each do |membership| %>
-          <% role_badge_class = { "owner" => "warning", "admin" => "primary", "member" => "secondary" }[membership.role] %>
+          <% role_badge_class = { "owner" => "warning", "admin" => "primary", "member" => "secondary", "viewer" => "info" }[membership.role] %>
           <li class="list-group-item">
             <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
               <div>
@@ -44,8 +44,8 @@
               </div>
 
               <div class="d-flex gap-1 flex-wrap">
-                <%# Promote (admin only, target is member) %>
-                <% if current_membership&.admin? && membership.member? %>
+                <%# Promote (admin can promote member → admin; also covers viewer → admin) %>
+                <% if policy(membership).update? && !membership.role.in?(%w[admin owner]) %>
                   <%= button_to "Make admin",
                                 workspace_membership_path(membership, role: "admin"),
                                 method: :patch,
@@ -53,8 +53,8 @@
                                 form: { data: { turbo_confirm: "Promote #{membership.user.email} to admin?" } } %>
                 <% end %>
 
-                <%# Demote (admin only, target is admin and not owner) %>
-                <% if current_membership&.admin? && membership.role == "admin" %>
+                <%# Demote (admin → member) %>
+                <% if policy(membership).update? && membership.role == "admin" %>
                   <%= button_to "Demote",
                                 workspace_membership_path(membership, role: "member"),
                                 method: :patch,
@@ -63,7 +63,7 @@
                 <% end %>
 
                 <%# Transfer ownership (owner only, target is admin and not self) %>
-                <% if current_membership&.owner? && membership.role == "admin" && membership.user != current_user %>
+                <% if policy(membership).transfer? && membership.user != current_user %>
                   <%= button_to "Transfer ownership",
                                 workspace_membership_path(membership, role: "owner"),
                                 method: :patch,
@@ -72,7 +72,7 @@
                 <% end %>
 
                 <%# Remove (admin only, target is not owner and not self) %>
-                <% if current_membership&.admin? && !membership.owner? && membership.user != current_user %>
+                <% if policy(membership).destroy? && membership.user != current_user %>
                   <%= button_to "Remove",
                                 workspace_membership_path(membership),
                                 method: :delete,
@@ -81,7 +81,7 @@
                 <% end %>
 
                 <%# Leave (self, not owner) %>
-                <% if membership.user == current_user && !membership.owner? %>
+                <% if membership.user == current_user && policy(membership).leave? %>
                   <%= button_to "Leave workspace",
                                 workspace_membership_path(membership),
                                 method: :delete,

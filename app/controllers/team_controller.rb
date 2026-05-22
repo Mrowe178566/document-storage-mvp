@@ -2,6 +2,7 @@ class TeamController < ApplicationController
   before_action :authenticate_user!
 
   def index
+    authorize current_workspace, :team?
     @memberships = current_workspace.memberships.includes(:user).to_a.sort_by do |m|
       [ Membership::ROLES.reverse.index(m.role), m.user.email ]
     end

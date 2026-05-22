@@ -3,9 +3,9 @@ class FoldersController < ApplicationController
   before_action :set_folder, only: [ :show, :edit, :update, :destroy ]
 
   def index
+    authorize current_workspace, :show?, policy_class: WorkspacePolicy
     @folders = current_workspace.folders.recent
 
-    # Dashboard sections — only computed once and passed to the view.
     @dashboard = {
       folder_count: current_workspace.folders.count,
       file_count: current_workspace.stored_files.count,
@@ -19,6 +19,7 @@ class FoldersController < ApplicationController
   end
 
   def show
+    authorize @folder
     @files = @folder.stored_files
     @files = @files.search(params[:query]) if params[:query].present?
     @stored_file = StoredFile.new
@@ -28,6 +29,7 @@ class FoldersController < ApplicationController
 
   def new
     @folder = current_workspace.folders.new
+    authorize @folder
     add_breadcrumb "Folders", folders_path
     add_breadcrumb "New"
   end
@@ -35,6 +37,8 @@ class FoldersController < ApplicationController
   def create
     @folder = current_workspace.folders.build(folder_params)
     @folder.user = current_user
+    authorize @folder
+
     if @folder.save
       redirect_to folders_path, notice: "Folder created successfully."
     else
@@ -43,11 +47,13 @@ class FoldersController < ApplicationController
   end
 
   def edit
+    authorize @folder
     add_breadcrumb "Folders", folders_path
     add_breadcrumb "Edit #{@folder.name}"
   end
 
   def update
+    authorize @folder
     if @folder.update(folder_params)
       redirect_to folders_path, notice: "Folder updated successfully."
     else
@@ -56,6 +62,7 @@ class FoldersController < ApplicationController
   end
 
   def destroy
+    authorize @folder
     @folder.destroy
     redirect_to folders_path, notice: "Folder deleted successfully."
   end

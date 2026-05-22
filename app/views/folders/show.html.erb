@@ -1,17 +1,24 @@
 <div class="container py-4">
 
   <!-- Folder Header -->
-  <div class="d-flex justify-content-between align-items-center mb-4">
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
     <h1 class="fw-bold mb-0">
       <i class="bi bi-folder-fill text-warning me-2"></i><%= @folder.name %>
     </h1>
+    <% if policy(@folder).edit? %>
+      <%= link_to edit_folder_path(@folder), class: "btn btn-outline-secondary btn-sm" do %>
+        <i class="bi bi-pencil me-1"></i>Rename
+      <% end %>
+    <% end %>
   </div>
 
-  <!-- Upload Form -->
-  <div class="mb-4">
-    <h5 class="fw-semibold mb-3">Upload a File</h5>
-    <%= render "stored_files/form", folder: @folder, stored_file: StoredFile.new %>
-  </div>
+  <!-- Upload Form (members+ only) -->
+  <% if policy(StoredFile.new(workspace: current_workspace, folder: @folder, user: current_user)).create? %>
+    <div class="mb-4">
+      <h5 class="fw-semibold mb-3">Upload a File</h5>
+      <%= render "stored_files/form", folder: @folder, stored_file: StoredFile.new %>
+    </div>
+  <% end %>
 
   <!-- Search Bar -->
   <div class="mb-4">
@@ -26,37 +33,50 @@
   <% if @files.empty? %>
     <div class="text-center text-muted py-5">
       <i class="bi bi-file-earmark-x" style="font-size: 3rem;"></i>
-      <p class="mt-3">No files yet. Upload your first one!</p>
+      <p class="mt-3">
+        <% if policy(StoredFile.new(workspace: current_workspace, folder: @folder, user: current_user)).create? %>
+          No files yet. Upload your first one!
+        <% else %>
+          No files in this folder yet.
+        <% end %>
+      </p>
     </div>
   <% else %>
-    <%= form_with url: bulk_delete_stored_files_path, method: :delete, local: true, 
+    <%= form_with url: bulk_delete_stored_files_path, method: :delete, local: true,
     data: { controller: "select-all", turbo_confirm: "Delete all selected files? This cannot be undone." } do |form| %>
-      <div class="d-flex justify-content-between align-items-center mb-2">
-        <div class="form-check">
-          <input type="checkbox" class="form-check-input"
-                 data-select-all-target="selectAll"
-                 data-action="change->select-all#toggle">
-          <label class="form-check-label">Select all</label>
+      <% can_bulk_delete = policy(StoredFile).bulk_delete? %>
+      <% if can_bulk_delete %>
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input"
+                   data-select-all-target="selectAll"
+                   data-action="change->select-all#toggle">
+            <label class="form-check-label">Select all</label>
+          </div>
+          <%= form.submit "Delete Selected", class: "btn btn-outline-danger btn-sm" %>
         </div>
-        <%= form.submit "Delete Selected", class: "btn btn-outline-danger btn-sm" %>
-      </div>
+      <% end %>
 
       <div class="list-group">
         <% @files.each do |file| %>
           <div class="list-group-item d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center gap-3">
-              <input type="checkbox" class="form-check-input file-checkbox"
-                     data-select-all-target="checkbox"
-                     name="file_ids[]" value="<%= file.id %>">
+              <% if can_bulk_delete %>
+                <input type="checkbox" class="form-check-input file-checkbox"
+                       data-select-all-target="checkbox"
+                       name="file_ids[]" value="<%= file.id %>">
+              <% end %>
               <i class="bi bi-file-earmark text-primary"></i>
               <span><%= file.file_name %></span>
             </div>
             <div class="d-flex gap-2">
               <%= link_to "Download", rails_blob_path(file.uploaded_file, disposition: "attachment"),
                   class: "btn btn-outline-secondary btn-sm" %>
-              <%= button_to "Delete", stored_file_path(file), method: :delete,
-                  class: "btn btn-outline-danger btn-sm",
-                  form: { data: { turbo_confirm: "Delete '#{file.file_name}'? This cannot be undone." } } %>
+              <% if policy(file).destroy? %>
+                <%= button_to "Delete", stored_file_path(file), method: :delete,
+                    class: "btn btn-outline-danger btn-sm",
+                    form: { data: { turbo_confirm: "Delete '#{file.file_name}'? This cannot be undone." } } %>
+              <% end %>
             </div>
           </div>
         <% end %>
