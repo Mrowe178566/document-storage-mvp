@@ -24,6 +24,22 @@ class WorkspacesController < ApplicationController
     add_breadcrumb "New workspace"
   end
 
+  def bootstrap
+    result = Workspaces::Bootstrap.call(workspace: current_workspace, user: current_user)
+
+    if result.success?
+      message =
+        if result.folders.any?
+          "Added #{result.folders.size} starter #{'folder'.pluralize(result.folders.size)} to #{current_workspace.name}."
+        else
+          "Starter folders were already in place."
+        end
+      redirect_to folders_path, notice: message
+    else
+      redirect_to folders_path, alert: "Couldn't bootstrap workspace: #{result.error}"
+    end
+  end
+
   def create
     result = Workspaces::Create.call(user: current_user, name: workspace_params[:name])
 

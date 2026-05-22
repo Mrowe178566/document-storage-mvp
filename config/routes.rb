@@ -11,6 +11,7 @@ Rails.application.routes.draw do
     resources :stored_files, only: [ :create, :destroy ]
 
     resource :workspace, only: [ :show, :update ] do
+      post :bootstrap
       resources :invitations, only: [ :new, :create ]
       resources :memberships, only: [ :update, :destroy ], module: :workspaces
     end

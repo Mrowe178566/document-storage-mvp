@@ -4,6 +4,17 @@ class FoldersController < ApplicationController
 
   def index
     @folders = current_workspace.folders.recent
+
+    # Dashboard sections — only computed once and passed to the view.
+    @dashboard = {
+      folder_count: current_workspace.folders.count,
+      file_count: current_workspace.stored_files.count,
+      member_count: current_workspace.memberships.count,
+      role: current_membership&.role,
+      suggested_folders: SuggestedFoldersQuery.call(workspace: current_workspace, limit: 4),
+      recent_activity: RecentActivityQuery.call(workspace: current_workspace, limit: 10)
+    }
+
     add_breadcrumb "Folders", folders_path
   end
 
