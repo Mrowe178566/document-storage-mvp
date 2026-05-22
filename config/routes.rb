@@ -2,7 +2,9 @@ Rails.application.routes.draw do
   devise_for :users, controllers: { registrations: "users/registrations" }
 
   authenticated :user do
-    resources :folders
+    resources :folders do
+      resource :permissions, only: [ :edit, :update ], controller: "folder_permissions"
+    end
 
     delete "stored_files/bulk_delete",
            to: "stored_files#bulk_delete",

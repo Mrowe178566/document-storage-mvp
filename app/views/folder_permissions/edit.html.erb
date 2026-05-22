@@ -1,0 +1,91 @@
+<div class="container py-4" style="max-width: 720px;"
+     data-controller="restricted-toggle">
+
+  <header class="mb-4">
+    <h1 class="fw-bold mb-1">
+      Manage access — <%= @folder.name %>
+    </h1>
+    <p class="text-muted mb-0">
+      Choose who can see this folder and the files inside it.
+      Admins and the workspace owner always have access regardless of these settings.
+    </p>
+  </header>
+
+  <%= form_with url: folder_permissions_path(@folder), method: :patch, local: true do |form| %>
+
+    <div class="card border-0 fv-card mb-3">
+      <div class="card-body">
+        <h2 class="h6 text-uppercase text-muted fw-semibold mb-3">Visibility</h2>
+
+        <div class="form-check mb-2">
+          <input class="form-check-input"
+                 type="radio"
+                 name="visibility"
+                 id="vis_public"
+                 value="public"
+                 data-action="change->restricted-toggle#hide"
+                 <%= "checked" unless @folder.restricted? %>>
+          <label class="form-check-label" for="vis_public">
+            <strong>Workspace</strong> — visible to every member of <%= current_workspace.name %>
+          </label>
+        </div>
+
+        <div class="form-check">
+          <input class="form-check-input"
+                 type="radio"
+                 name="visibility"
+                 id="vis_restricted"
+                 value="restricted"
+                 data-action="change->restricted-toggle#show"
+                 <%= "checked" if @folder.restricted? %>>
+          <label class="form-check-label" for="vis_restricted">
+            <strong>Restricted</strong> — only specific people can see it
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="card border-0 fv-card mb-3"
+         data-restricted-toggle-target="people"
+         style="<%= 'display: none;' unless @folder.restricted? %>">
+      <div class="card-body">
+        <h2 class="h6 text-uppercase text-muted fw-semibold mb-3">Who can access</h2>
+
+        <% @workspace_users.each do |u| %>
+          <% membership = u.membership_for(current_workspace) %>
+          <% is_admin   = membership&.admin? %>
+          <% role       = membership&.role %>
+          <% role_badge = { "owner" => "warning", "admin" => "primary", "member" => "secondary", "viewer" => "info" }[role] %>
+
+          <div class="form-check d-flex align-items-center gap-2 py-2 border-bottom">
+            <input class="form-check-input mt-0"
+                   type="checkbox"
+                   name="user_ids[]"
+                   value="<%= u.id %>"
+                   id="user_<%= u.id %>"
+                   <%= "checked" if @granted_user_ids.include?(u.id) %>
+                   <%= "disabled" if is_admin %>>
+            <label class="form-check-label flex-grow-1 ms-2 mb-0" for="user_<%= u.id %>">
+              <%= u.email %>
+              <% if u == current_user %>
+                <span class="badge text-bg-light text-muted ms-1">You</span>
+              <% end %>
+            </label>
+            <span class="badge text-bg-<%= role_badge %> text-uppercase">
+              <%= role %>
+            </span>
+            <% if is_admin %>
+              <small class="text-muted ms-2">always has access</small>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="d-flex gap-2 mt-3">
+      <%= form.submit "Save access", class: "btn btn-primary" %>
+      <%= link_to "Cancel", folder_path(@folder), class: "btn btn-link text-muted" %>
+    </div>
+  <% end %>
+
+</div>

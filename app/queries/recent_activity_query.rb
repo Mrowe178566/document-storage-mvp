@@ -7,19 +7,24 @@
 # need persistent audit logging, swap this implementation for one that reads
 # from an Activity table without changing callers.
 #
+# visible_folder_ids is an optional filter (typically passed from the
+# dashboard controller via policy_scope) that hides file/folder events for
+# restricted folders the current user can't see. Pass nil to get everything.
+#
 # Usage:
 #   events = RecentActivityQuery.call(workspace: current_workspace, limit: 20)
 #   events.each { |e| puts "#{e.timestamp} #{e.message}" }
 class RecentActivityQuery
   Event = Struct.new(:type, :message, :actor_email, :timestamp, :icon, keyword_init: true)
 
-  def self.call(workspace:, limit: 20)
-    new(workspace: workspace, limit: limit).call
+  def self.call(workspace:, visible_folder_ids: nil, limit: 20)
+    new(workspace: workspace, visible_folder_ids: visible_folder_ids, limit: limit).call
   end
 
-  def initialize(workspace:, limit:)
-    @workspace = workspace
-    @limit = limit
+  def initialize(workspace:, visible_folder_ids:, limit:)
+    @workspace          = workspace
+    @visible_folder_ids = visible_folder_ids
+    @limit              = limit
   end
 
   def call
@@ -41,11 +46,9 @@ class RecentActivityQuery
   end
 
   def file_events
-    @workspace.stored_files
-              .includes(:user, :folder)
-              .order(created_at: :desc)
-              .limit(per_source_limit)
-              .map do |file|
+    files = @workspace.stored_files.includes(:user, :folder)
+    files = files.where(folder_id: @visible_folder_ids) if @visible_folder_ids
+    files.order(created_at: :desc).limit(per_source_limit).map do |file|
       Event.new(
         type: :file_uploaded,
         message: "uploaded <strong>#{ERB::Util.h(file.file_name)}</strong> to #{ERB::Util.h(file.folder&.name || 'a folder')}",
@@ -57,11 +60,9 @@ class RecentActivityQuery
   end
 
   def folder_events
-    @workspace.folders
-              .includes(:user)
-              .order(created_at: :desc)
-              .limit(per_source_limit)
-              .map do |folder|
+    folders = @workspace.folders.includes(:user)
+    folders = folders.where(id: @visible_folder_ids) if @visible_folder_ids
+    folders.order(created_at: :desc).limit(per_source_limit).map do |folder|
       Event.new(
         type: :folder_created,
         message: "created folder <strong>#{ERB::Util.h(folder.name)}</strong>",

@@ -1,15 +1,37 @@
 <div class="container py-4">
 
   <!-- Folder Header -->
-  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-    <h1 class="fw-bold mb-0">
-      <i class="bi bi-folder-fill text-warning me-2"></i><%= @folder.name %>
-    </h1>
-    <% if policy(@folder).edit? %>
-      <%= link_to edit_folder_path(@folder), class: "btn btn-outline-secondary btn-sm" do %>
-        <i class="bi bi-pencil me-1"></i>Rename
+  <div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-2">
+    <div>
+      <h1 class="fw-bold mb-1">
+        <i class="bi bi-folder-fill text-warning me-2"></i><%= @folder.name %>
+        <% if @folder.restricted? %>
+          <span class="badge text-bg-light text-muted ms-2 align-middle"
+                style="font-size: 0.6em; vertical-align: middle;">
+            <i class="bi bi-lock-fill"></i> Restricted
+          </span>
+        <% end %>
+      </h1>
+      <% if @folder.restricted? %>
+        <p class="text-muted small mb-0">
+          Visible to <%= @folder.folder_permissions.count %>
+          <%= "person".pluralize(@folder.folder_permissions.count) %>
+          + workspace admins.
+        </p>
       <% end %>
-    <% end %>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+      <% if policy(@folder).manage_permissions? %>
+        <%= link_to edit_folder_permissions_path(@folder), class: "btn btn-outline-secondary btn-sm" do %>
+          <i class="bi bi-shield-lock me-1"></i>Manage access
+        <% end %>
+      <% end %>
+      <% if policy(@folder).edit? %>
+        <%= link_to edit_folder_path(@folder), class: "btn btn-outline-secondary btn-sm" do %>
+          <i class="bi bi-pencil me-1"></i>Rename
+        <% end %>
+      <% end %>
+    </div>
   </div>
 
   <!-- Upload Form (members+ only) -->
