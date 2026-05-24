@@ -3,7 +3,7 @@
 
     <%# ─── Workspace switcher header ─────────────────────────── %>
     <% if current_workspace %>
-      <div class="fv-sidebar-workspace dropdown">
+      <div class="fv-sidebar-workspace dropend">
         <button class="fv-workspace-trigger"
                 type="button"
                 data-bs-toggle="dropdown"
@@ -91,7 +91,7 @@
     </div>
 
     <%# ─── User section at bottom ─────────────────────────────── %>
-    <div class="fv-sidebar-user dropdown">
+    <div class="fv-sidebar-user dropend">
       <button class="fv-user-trigger"
               type="button"
               data-bs-toggle="dropdown"
@@ -105,7 +105,7 @@
         <i class="bi bi-three-dots-vertical fv-user-caret"></i>
       </button>
 
-      <ul class="dropdown-menu dropdown-menu-end shadow">
+      <ul class="dropdown-menu shadow">
         <li>
           <h6 class="dropdown-header"><%= current_user.email %></h6>
         </li>

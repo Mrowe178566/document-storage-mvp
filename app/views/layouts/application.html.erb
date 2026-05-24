@@ -25,9 +25,6 @@
       <div class="fv-layout">
         <%= render "shared/nav" %>
         <div class="fv-main">
-          <div class="fv-topbar">
-            <%= render "shared/breadcrumbs" if breadcrumbs.any? %>
-          </div>
           <div class="fv-content">
             <%= render "shared/flash" %>
             <%= yield %>

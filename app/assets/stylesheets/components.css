@@ -253,13 +253,6 @@
   min-height: 100vh;
 }
 
-.fv-topbar {
-  padding: 14px 32px;
-  border-bottom: 1px solid var(--fv-border);
-  background: var(--fv-surface);
-  min-height: 50px;
-}
-
 .fv-content {
   padding: 0;
   flex: 1;
@@ -678,7 +671,6 @@
 
   .fv-main { margin-left: 0; margin-bottom: 56px; }
   .fv-content { padding: 0; }
-  .fv-topbar { padding: 8px 16px; }
 }
 
 @media (max-width: 480px) {
