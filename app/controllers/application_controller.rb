@@ -47,18 +47,6 @@ class ApplicationController < ActionController::Base
     workspace
   end
 
-  # Retained for back-compat with controllers/views that haven't been migrated
-  # to Pundit yet. New code should authorize via policies instead.
-  def require_workspace_admin
-    return if current_membership&.admin?
-    redirect_to authenticated_root_path, alert: "Only workspace admins can do that."
-  end
-
-  def require_workspace_owner
-    return if current_membership&.owner?
-    redirect_to authenticated_root_path, alert: "Only the workspace owner can do that."
-  end
-
   def user_not_authorized(exception)
     policy_name = exception.policy.class.to_s.underscore
     Rails.logger.info "[pundit] #{current_user&.email} denied: #{policy_name}##{exception.query}"

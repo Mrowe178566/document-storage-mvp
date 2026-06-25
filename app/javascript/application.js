@@ -2,12 +2,4 @@
 import "@hotwired/turbo-rails"
 import "controllers"
 
-// Change to true to allow Turbo
 Turbo.session.drive = true
-
-// Allow UJS alongside Turbo
-import jquery from "jquery";
-window.jQuery = jquery;
-window.$ = jquery;
-import Rails from "@rails/ujs"
-Rails.start();

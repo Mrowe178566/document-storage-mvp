@@ -11,11 +11,6 @@ class Membership < ApplicationRecord
   validates :user_id, uniqueness: { scope: :workspace_id }
   validate :only_one_owner_per_workspace, if: :owner?
 
-  scope :owners,       -> { where(role: "owner") }
-  scope :admins,       -> { where(role: [ "owner", "admin" ]) }
-  scope :members_only, -> { where(role: "member") }
-  scope :viewers,      -> { where(role: "viewer") }
-
   def owner?
     role == "owner"
   end
