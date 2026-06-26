@@ -86,9 +86,14 @@ The app runs at `http://localhost:3000`. Invitation emails open in your browser 
 CLOUDINARY_CLOUD_NAME=...
 CLOUDINARY_API_KEY=...
 CLOUDINARY_API_SECRET=...
-DATABASE_URL=postgresql://localhost/document_storage_mvp_development
 MAIL_FROM=no-reply@filevault.local
 ```
+
+Don't set `DATABASE_URL` locally — `config/database.yml` already points each
+environment at its own database (`…_development` vs `…_test`) over a local
+Postgres. A global `DATABASE_URL` overrides `database.yml` and would run your
+test suite against the development database. `DATABASE_URL` is set only in
+production (Render → Supabase).
 
 In production, also set `APP_HOST` (e.g. `file-vault.onrender.com`) so invitation email links resolve correctly.
 
