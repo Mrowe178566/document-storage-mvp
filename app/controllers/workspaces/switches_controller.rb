@@ -2,7 +2,7 @@ class Workspaces::SwitchesController < ApplicationController
   before_action :authenticate_user!
 
   def create
-    target = current_user.workspaces.find_by(id: params[:workspace_id])
+    target = current_user.workspaces.find_by(id: params[:id])
 
     if target
       session[:current_workspace_id] = target.id

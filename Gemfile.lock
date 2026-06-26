@@ -133,7 +133,6 @@ GEM
       responders
       warden (~> 1.2.3)
     diff-lcs (1.6.0)
-    domain_name (0.6.20240107)
     dotenv (3.1.7)
     drb (2.2.1)
     erubi (1.13.1)
@@ -156,11 +155,6 @@ GEM
       activesupport (>= 6.1)
     hashdiff (1.1.2)
     htmlbeautifier (1.4.3)
-    http (6.0.3)
-      http-cookie (~> 1.0)
-      llhttp (~> 0.6.1)
-    http-cookie (1.1.6)
-      domain_name (~> 0.5)
     i18n (1.14.7)
       concurrent-ruby (~> 1.0)
     importmap-rails (2.1.0)
@@ -193,7 +187,6 @@ GEM
     letter_opener (1.10.0)
       launchy (>= 2.2, < 4)
     lint_roller (1.1.0)
-    llhttp (0.6.1)
     logger (1.6.6)
     loofah (2.24.0)
       crass (~> 1.0.2)
@@ -338,7 +331,6 @@ GEM
       actionpack (>= 5.2)
       railties (>= 5.2)
     rexml (3.4.1)
-    rollbar (3.8.0)
     rouge (4.5.1)
     rspec (3.13.0)
       rspec-core (~> 3.13.0)
@@ -492,7 +484,6 @@ DEPENDENCIES
   devise
   dotenv
   htmlbeautifier
-  http
   importmap-rails
   letter_opener
   pg (~> 1.1)
@@ -504,7 +495,6 @@ DEPENDENCIES
   rails-controller-testing
   rails-erd
   rails_db (~> 2.5.0)
-  rollbar
   rspec-html-matchers
   rspec-rails (~> 7.1.1)
   rubocop-rails-omakase

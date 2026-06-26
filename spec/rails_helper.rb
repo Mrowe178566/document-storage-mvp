@@ -49,14 +49,16 @@ RSpec.configure do |config|
     config.include Devise::Test::IntegrationHelpers, type: :request
   end
 
-  config.include ActiveJob::TestHelper, type: :feature
-  config.include ActiveJob::TestHelper, type: :request
+  config.include ActiveJob::TestHelper
 
   require_relative "support/workspace_helpers"
   config.include WorkspaceHelpers
 
-  # Rails 8 issue: https://github.com/heartcombo/devise/issues/5705
-  config.before(:each, type: :controller) do
+  # Rails 8 + Devise: routes (and therefore Devise's Warden mappings) may not
+  # be loaded yet when a spec calls sign_in, raising "Could not find a valid
+  # mapping". Ensure routes are loaded before every example, not just for
+  # controller specs. https://github.com/heartcombo/devise/issues/5705
+  config.before(:each) do
     Rails.application.reload_routes_unless_loaded
   end
 

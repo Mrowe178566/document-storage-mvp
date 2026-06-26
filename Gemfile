@@ -19,8 +19,6 @@ gem "bootsnap", require: false
 gem "thruster", require: false
 gem "tzinfo-data", platforms: %i[windows jruby]
 gem "dotenv"
-gem "http"
-gem "rollbar"
 
 group :development, :test do
   gem "debug", platforms: %i[mri windows], require: "debug/prelude"

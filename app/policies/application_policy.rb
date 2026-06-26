@@ -37,20 +37,22 @@ class ApplicationPolicy
     user.present?
   end
 
+  # These coerce to real booleans (not nil) so policy predicates always
+  # return true/false even when there's no membership (non-member users).
   def admin?
-    membership&.admin?
+    membership&.admin? || false
   end
 
   def owner?
-    membership&.owner?
+    membership&.owner? || false
   end
 
   def can_edit?
-    membership&.can_edit?
+    membership&.can_edit? || false
   end
 
   def viewer?
-    membership&.viewer?
+    membership&.viewer? || false
   end
 
   def any_member?

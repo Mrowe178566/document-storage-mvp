@@ -30,7 +30,7 @@ Rails.application.routes.draw do
   end
 
   # Public invitation acceptance — no authentication required
-  get  "invitations/:token", to: "invitation_acceptances#show", as: :invitation_acceptance
+  get "invitations/:token", to: "invitation_acceptances#show", as: :invitation_acceptance
   patch "invitations/:token", to: "invitation_acceptances#update"
 
   unauthenticated do

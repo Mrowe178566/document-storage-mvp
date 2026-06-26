@@ -88,11 +88,14 @@ RSpec.describe "Workspace memberships", type: :request do
 
   describe "self leave" do
     it "allows a member to leave when they have another workspace" do
+      # Force `workspace` (and the member's membership in it) to exist first so
+      # it's the member's current workspace — the one they're leaving. Only then
+      # add a second workspace to fall back to.
+      m = member.membership_for(workspace)
       _, other_workspace = create_owner_with_workspace(workspace_name: "Other")
       Membership.create!(user: member, workspace: other_workspace, role: "member")
 
       sign_in member
-      m = member.membership_for(workspace)
 
       expect { delete workspace_membership_path(m) }.to change { Membership.exists?(m.id) }.from(true).to(false)
     end
