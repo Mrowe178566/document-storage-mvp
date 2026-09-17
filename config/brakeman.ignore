@@ -1,0 +1,27 @@
+{
+  "ignored_warnings": [
+    {
+      "warning_type": "Mass Assignment",
+      "warning_code": 105,
+      "fingerprint": "aaccd8db0be34afdc88e5af08d91ae2e8b7765dfea2f3fc6e1c37db0adc7b991",
+      "check_name": "PermitAttributes",
+      "message": "Potentially dangerous key allowed for mass assignment",
+      "file": "app/controllers/invitations_controller.rb",
+      "line": 33,
+      "code": "params.require(:invitation).permit(:email, :role)",
+      "note": "Intentional. The invited role is user input by design. Invitation validates role against INVITABLE_ROLES (viewer, member, admin; never owner), and InvitationPolicy restricts creating invitations to admin-level members."
+    },
+    {
+      "warning_type": "Unmaintained Dependency",
+      "warning_code": 120,
+      "fingerprint": "21ab0fe00fdd5899ffc405cff75aadb91b805ee996a614f7e27b08a287e9062d",
+      "check_name": "EOLRails",
+      "message": "Support for Rails 8.0.2 ends on 2026-11-07",
+      "file": "Gemfile.lock",
+      "line": 273,
+      "note": "Known. Rails 8.1 upgrade is a separate task; acknowledging so CI reflects code security, not the upgrade calendar."
+    }
+  ],
+  "updated": "2026-09-17",
+  "brakeman_version": "8.0.6"
+}
