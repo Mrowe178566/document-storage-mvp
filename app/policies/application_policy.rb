@@ -38,19 +38,19 @@ class ApplicationPolicy
   end
 
   def admin?
-    membership&.admin?
+    any_member? && membership.admin?
   end
 
   def owner?
-    membership&.owner?
+    any_member? && membership.owner?
   end
 
   def can_edit?
-    membership&.can_edit?
+    any_member? && membership.can_edit?
   end
 
   def viewer?
-    membership&.viewer?
+    any_member? && membership.viewer?
   end
 
   def any_member?

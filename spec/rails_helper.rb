@@ -55,9 +55,13 @@ RSpec.configure do |config|
   require_relative "support/workspace_helpers"
   config.include WorkspaceHelpers
 
-  # Rails 8 issue: https://github.com/heartcombo/devise/issues/5705
-  config.before(:each, type: :controller) do
-    Rails.application.reload_routes_unless_loaded
+  # Rails 8 loads routes lazily, so Devise's mappings may not exist yet when
+  # sign_in runs in whichever spec happens to go first. Force-load them for
+  # every spec type that signs in. https://github.com/heartcombo/devise/issues/5705
+  %i[controller request feature].each do |spec_type|
+    config.before(:each, type: spec_type) do
+      Rails.application.reload_routes_unless_loaded
+    end
   end
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures

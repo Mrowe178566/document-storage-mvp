@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe Invitations::Create do
+  include ActiveJob::TestHelper
+
   let(:setup)      { create_owner_with_workspace(email: "admin@example.com") }
   let(:admin)      { setup[0] }
   let(:workspace)  { setup[1] }
