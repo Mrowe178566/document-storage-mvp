@@ -10,9 +10,11 @@
     "PGHOST": "localhost",
     "PGUSER": "postgres",
     "PGPASSWORD": "postgres",
-    "PGDATABASE": "document_storage_mvp_development",
-    "DATABASE_URL": "postgres://postgres:postgres@localhost:5432/document_storage_mvp_development"
+    "PGDATABASE": "document_storage_mvp_development"
   },
+  // No DATABASE_URL on purpose. The PG* vars above handle the connection and
+  // config/database.yml picks the database per environment. A DATABASE_URL here
+  // would override that and point the test suite at the development database.
 
   "forwardPorts": [3000],
 

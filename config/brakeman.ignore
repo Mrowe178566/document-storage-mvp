@@ -14,7 +14,7 @@
     {
       "warning_type": "Unmaintained Dependency",
       "warning_code": 120,
-      "fingerprint": "21ab0fe00fdd5899ffc405cff75aadb91b805ee996a614f7e27b08a287e9062d",
+      "fingerprint": "98b26f60d776fd41ee6f088c833725145be9aac2d7c5b33780241c273622db42",
       "check_name": "EOLRails",
       "message": "Support for Rails 8.0.2 ends on 2026-11-07",
       "file": "Gemfile.lock",
@@ -22,6 +22,6 @@
       "note": "Known. Rails 8.1 upgrade is a separate task; acknowledging so CI reflects code security, not the upgrade calendar."
     }
   ],
-  "updated": "2026-09-17",
-  "brakeman_version": "8.0.6"
+  "updated": "2026-10-31",
+  "brakeman_version": "8.1.0"
 }
