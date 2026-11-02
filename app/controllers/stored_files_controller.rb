@@ -22,6 +22,17 @@ class StoredFilesController < ApplicationController
     end
   end
 
+  # Files are sent through the app so every download is checked against the
+  # policy. This reads the whole file into memory, which is fine under the
+  # 25 MB upload cap.
+  def download
+    @stored_file = current_workspace.stored_files.find(params[:id])
+    authorize @stored_file
+
+    blob = @stored_file.uploaded_file.blob
+    send_data blob.download, filename: blob.filename.to_s, type: blob.content_type, disposition: "attachment"
+  end
+
   def destroy
     @stored_file = current_workspace.stored_files.find(params[:id])
     authorize @stored_file
@@ -33,7 +44,8 @@ class StoredFilesController < ApplicationController
     authorize StoredFile, :bulk_delete?
     file_ids = params[:file_ids]
     if file_ids.present?
-      files = current_workspace.stored_files.where(id: file_ids)
+      # policy_scope skips files in restricted folders this user can't access.
+      files = policy_scope(current_workspace.stored_files).where(id: file_ids)
       folder = files.first&.folder
       files.destroy_all
       redirect_to folder ? folder_path(folder) : authenticated_root_path,

@@ -92,8 +92,9 @@
               <span><%= file.file_name %></span>
             </div>
             <div class="d-flex gap-2">
-              <%= link_to "Download", rails_blob_path(file.uploaded_file, disposition: "attachment"),
-                  class: "btn btn-outline-secondary btn-sm" %>
+              <%= link_to "Download", download_stored_file_path(file),
+                  class: "btn btn-outline-secondary btn-sm",
+                  data: { turbo: false } %>
               <% if policy(file).destroy? %>
                 <%= button_to "Delete", stored_file_path(file), method: :delete,
                     class: "btn btn-outline-danger btn-sm",
