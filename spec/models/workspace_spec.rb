@@ -7,6 +7,7 @@ RSpec.describe Workspace, type: :model do
     it { should have_many(:folders).dependent(:destroy) }
     it { should have_many(:stored_files).dependent(:destroy) }
     it { should have_many(:invitations).dependent(:destroy) }
+    it { should have_many(:document_types).dependent(:destroy) }
   end
 
   describe "validations" do

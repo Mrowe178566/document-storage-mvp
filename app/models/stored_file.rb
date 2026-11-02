@@ -14,6 +14,7 @@ class StoredFile < ApplicationRecord
   belongs_to :workspace
   belongs_to :user # uploader, kept for attribution
   belongs_to :folder
+  belongs_to :document_type, optional: true
 
   has_one_attached :uploaded_file, dependent: :purge_later
 
@@ -21,6 +22,7 @@ class StoredFile < ApplicationRecord
   validate :uploaded_file_attached
   validate :uploaded_file_content_type
   validate :uploaded_file_size
+  validate :document_type_in_same_workspace
 
   scope :by_name, -> { order(file_name: :asc) }
   scope :search, ->(query) {
@@ -44,5 +46,10 @@ class StoredFile < ApplicationRecord
     return unless uploaded_file.attached?
     return if uploaded_file.blob.byte_size <= MAX_FILE_SIZE
     errors.add(:uploaded_file, "must be #{MAX_FILE_SIZE / 1.megabyte}MB or less")
+  end
+
+  def document_type_in_same_workspace
+    return if document_type.nil? || document_type.workspace_id == workspace_id
+    errors.add(:document_type, "must belong to this workspace")
   end
 end
