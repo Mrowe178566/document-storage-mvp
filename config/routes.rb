@@ -28,7 +28,7 @@ Rails.application.routes.draw do
     get "team",    to: "team#index",              as: :team
     get "pinned",  to: "pins#index",              as: :pins
 
-    root "folders#index", as: :authenticated_root
+    root "dashboard#show", as: :authenticated_root
   end
 
   # Public invitation acceptance — no authentication required

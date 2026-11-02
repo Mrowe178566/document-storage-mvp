@@ -54,13 +54,13 @@
     <%# ─── Primary nav ────────────────────────────────────────── %>
     <div class="fv-sidebar-nav">
       <%= link_to authenticated_root_path,
-          class: "fv-nav-item #{'active' if current_page?(authenticated_root_path) || current_page?(folders_path)}" do %>
+          class: "fv-nav-item #{'active' if controller_name == 'dashboard'}" do %>
         <i class="bi bi-grid-1x2 fv-nav-icon"></i>
         <span class="fv-nav-label">Dashboard</span>
       <% end %>
 
       <%= link_to folders_path,
-          class: "fv-nav-item #{'active' if controller_name == 'folders' && action_name != 'index'}" do %>
+          class: "fv-nav-item #{'active' if controller_name.in?(%w[folders folder_permissions])}" do %>
         <i class="bi bi-folder fv-nav-icon"></i>
         <span class="fv-nav-label">Folders</span>
       <% end %>
