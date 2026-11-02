@@ -10,16 +10,6 @@
       "line": 33,
       "code": "params.require(:invitation).permit(:email, :role)",
       "note": "Intentional. The invited role is user input by design. Invitation validates role against INVITABLE_ROLES (viewer, member, admin; never owner), and InvitationPolicy restricts creating invitations to admin-level members."
-    },
-    {
-      "warning_type": "Unmaintained Dependency",
-      "warning_code": 120,
-      "fingerprint": "98b26f60d776fd41ee6f088c833725145be9aac2d7c5b33780241c273622db42",
-      "check_name": "EOLRails",
-      "message": "Support for Rails 8.0.2 ends on 2026-11-07",
-      "file": "Gemfile.lock",
-      "line": 273,
-      "note": "Known. Rails 8.1 upgrade is a separate task; acknowledging so CI reflects code security, not the upgrade calendar."
     }
   ],
   "updated": "2026-10-31",
