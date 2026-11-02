@@ -35,6 +35,11 @@ module Rails8Template
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    # Turn off Active Storage's public blob URLs (/rails/active_storage/...).
+    # They skip sign-in and Pundit, and their signed links never expire.
+    # Files are served only by StoredFilesController#download.
+    config.active_storage.draw_routes = false
     config.generators do |g|
       g.test_framework nil
       g.factory_bot false

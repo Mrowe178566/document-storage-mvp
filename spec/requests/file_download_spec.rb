@@ -18,13 +18,13 @@ RSpec.describe "File downloads", type: :request do
 
   before { sign_in user }
 
-  it "serves the stored file with attachment disposition" do
-    get rails_blob_path(stored_file.uploaded_file, disposition: "attachment")
-    expect(response).to have_http_status(:redirect)
+  it "sends the stored file through the app as an attachment" do
+    get download_stored_file_path(stored_file)
 
-    follow_redirect!
     expect(response).to have_http_status(:ok)
+    expect(response.media_type).to eq("application/pdf")
     expect(response.headers["Content-Disposition"]).to include("attachment")
     expect(response.headers["Content-Disposition"]).to include("sample.pdf")
+    expect(response.body.b).to eq(File.binread(Rails.root.join("spec/fixtures/files/sample.pdf")))
   end
 end

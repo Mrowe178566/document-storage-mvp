@@ -10,7 +10,9 @@ Rails.application.routes.draw do
            to: "stored_files#bulk_delete",
            as: :bulk_delete_stored_files
 
-    resources :stored_files, only: [ :create, :destroy ]
+    resources :stored_files, only: [ :create, :destroy ] do
+      get :download, on: :member
+    end
 
     resource :workspace, only: [ :show, :update ] do
       post :bootstrap
