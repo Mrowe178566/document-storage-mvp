@@ -24,6 +24,7 @@ RSpec.describe StoredFile, type: :model do
     it { should belong_to(:workspace) }
     it { should belong_to(:user) }
     it { should belong_to(:folder) }
+    it { should belong_to(:document_type).optional }
   end
 
   describe "validations" do
@@ -60,6 +61,55 @@ RSpec.describe StoredFile, type: :model do
       photo = build_file(file_name: "photo.jpg", content_type: "image/jpeg").tap(&:save!)
       expect(StoredFile.search("invoice")).to include(invoice)
       expect(StoredFile.search("invoice")).not_to include(photo)
+    end
+  end
+
+  describe "document type" do
+    let(:insurance) do
+      workspace.document_types.create!(
+        name: "Insurance certificate", expires: true, valid_for_months: 12, remind_days_before: 30
+      )
+    end
+
+    it "is optional, so existing uploads keep working" do
+      expect(build_file(file_name: "plain.pdf")).to be_valid
+    end
+
+    it "can be set along with an expiry date" do
+      file = build_file(file_name: "coi.pdf")
+      file.document_type = insurance
+      file.expires_on = Date.new(2027, 11, 2)
+      file.save!
+      expect(file.reload).to have_attributes(document_type: insurance, expires_on: Date.new(2027, 11, 2))
+    end
+
+    it "must belong to the same workspace as the file" do
+      _, other_workspace = create_owner_with_workspace(workspace_name: "Other")
+      foreign_type = other_workspace.document_types.create!(name: "Insurance certificate")
+
+      file = build_file(file_name: "coi.pdf")
+      file.document_type = foreign_type
+      expect(file).not_to be_valid
+      expect(file.errors[:document_type]).to include("must belong to this workspace")
+    end
+
+    it "is cleared, not deleted, when the type is removed" do
+      file = build_file(file_name: "coi.pdf")
+      file.document_type = insurance
+      file.save!
+
+      insurance.destroy!
+      expect(file.reload.document_type).to be_nil
+    end
+
+    it "keeps the file's expiry date when the type's settings change later" do
+      file = build_file(file_name: "coi.pdf")
+      file.document_type = insurance
+      file.expires_on = Date.new(2027, 11, 2)
+      file.save!
+
+      insurance.update!(valid_for_months: 24)
+      expect(file.reload.expires_on).to eq(Date.new(2027, 11, 2))
     end
   end
 end

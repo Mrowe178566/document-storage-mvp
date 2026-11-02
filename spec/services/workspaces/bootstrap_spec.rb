@@ -21,6 +21,25 @@ RSpec.describe Workspaces::Bootstrap do
         expect(result.error).to be_nil
       end
 
+      it "creates the manufacturing starter document types" do
+        result = described_class.call(workspace: workspace, user: owner)
+
+        expect(result.document_types.map(&:name))
+          .to match_array(Workspaces::Bootstrap::MANUFACTURING_DOCUMENT_TYPES.map { |t| t[:name] })
+        expect(workspace.document_types.count).to eq(Workspaces::Bootstrap::MANUFACTURING_DOCUMENT_TYPES.size)
+      end
+
+      it "gives each starter type the settings from the starter list" do
+        described_class.call(workspace: workspace, user: owner)
+
+        expect(workspace.document_types.find_by!(name: "Quality certificate")).to have_attributes(
+          expires: true, valid_for_months: 36, remind_days_before: 60, requires_approval: true
+        )
+        expect(workspace.document_types.find_by!(name: "Tax form")).to have_attributes(
+          expires: false, valid_for_months: nil, remind_days_before: nil, requires_approval: false
+        )
+      end
+
       it "attributes each folder to the bootstrapping user" do
         result = described_class.call(workspace: workspace, user: owner)
         expect(result.folders).to all(have_attributes(user: owner))
@@ -40,6 +59,13 @@ RSpec.describe Workspaces::Bootstrap do
         result = described_class.call(workspace: workspace, user: owner)
         expect(result).to be_success
         expect(result.folders).to be_empty
+        expect(result.document_types).to be_empty
+      end
+
+      it "doesn't duplicate any document types" do
+        expect {
+          described_class.call(workspace: workspace, user: owner)
+        }.not_to change(workspace.document_types, :count)
       end
     end
 
@@ -52,6 +78,21 @@ RSpec.describe Workspaces::Bootstrap do
         result = described_class.call(workspace: workspace, user: owner)
         expect(result.folders.size).to eq(Workspaces::Bootstrap::MANUFACTURING_FOLDERS.size - 1)
         expect(result.folders.map(&:name)).not_to include("Quality Control")
+      end
+    end
+
+    context "when the workspace already has a type with a starter name" do
+      before do
+        workspace.document_types.create!(name: "tax FORM", expires: true, valid_for_months: 6, remind_days_before: 14)
+      end
+
+      it "leaves the existing type and its settings alone" do
+        result = described_class.call(workspace: workspace, user: owner)
+
+        expect(result).to be_success
+        expect(result.document_types.map(&:name)).not_to include("Tax form")
+        expect(workspace.document_types.where("lower(name) = 'tax form'").sole)
+          .to have_attributes(name: "tax FORM", valid_for_months: 6)
       end
     end
 

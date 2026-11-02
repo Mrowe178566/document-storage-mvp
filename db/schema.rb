@@ -10,7 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_05_22_100000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_02_120100) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_catalog.plpgsql"
+
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -37,6 +40,20 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_22_100000) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "document_types", force: :cascade do |t|
+    t.bigint "workspace_id", null: false
+    t.string "name", null: false
+    t.boolean "expires", default: false, null: false
+    t.integer "valid_for_months"
+    t.integer "remind_days_before"
+    t.boolean "requires_approval", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index "workspace_id, lower((name)::text)", name: "index_document_types_on_workspace_and_lower_name", unique: true
+    t.index ["workspace_id"], name: "index_document_types_on_workspace_id"
+    t.check_constraint "expires AND valid_for_months IS NOT NULL AND remind_days_before IS NOT NULL AND valid_for_months > 0 AND remind_days_before >= 0 OR NOT expires AND valid_for_months IS NULL AND remind_days_before IS NULL", name: "document_types_expiry_settings"
   end
 
   create_table "folder_permissions", force: :cascade do |t|
@@ -236,8 +253,12 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_22_100000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "workspace_id", null: false
+    t.bigint "document_type_id"
+    t.date "expires_on"
+    t.index ["document_type_id"], name: "index_stored_files_on_document_type_id"
     t.index ["folder_id"], name: "index_stored_files_on_folder_id"
     t.index ["user_id"], name: "index_stored_files_on_user_id"
+    t.index ["workspace_id", "expires_on"], name: "index_stored_files_on_workspace_id_and_expires_on"
     t.index ["workspace_id"], name: "index_stored_files_on_workspace_id"
   end
 
@@ -264,6 +285,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_22_100000) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "document_types", "workspaces"
   add_foreign_key "folder_permissions", "folders"
   add_foreign_key "folder_permissions", "users"
   add_foreign_key "folders", "users"
@@ -278,6 +300,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_22_100000) do
   add_foreign_key "solid_queue_ready_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
+  add_foreign_key "stored_files", "document_types", on_delete: :nullify
   add_foreign_key "stored_files", "folders"
   add_foreign_key "stored_files", "users"
   add_foreign_key "stored_files", "workspaces"
