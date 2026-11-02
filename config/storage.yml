@@ -11,6 +11,11 @@ cloudinary:
   cloud_name: <%= ENV["CLOUDINARY_CLOUD_NAME"] %>
   api_key:    <%= ENV["CLOUDINARY_API_KEY"] %>
   api_secret: <%= ENV["CLOUDINARY_API_SECRET"] %>
+  # Store files as "authenticated" so a plain Cloudinary URL doesn't open
+  # them. The app downloads with URLs signed by the API secret, on the server
+  # only. Files uploaded before this setting: bin/rails cloudinary:make_private
+  type: authenticated
+  sign_url: true
 
 
 # Use bin/rails credentials:edit to set the AWS secrets (as aws:access_key_id|secret_access_key)
