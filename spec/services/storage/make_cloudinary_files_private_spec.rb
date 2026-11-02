@@ -67,14 +67,34 @@ RSpec.describe Storage::MakeCloudinaryFilesPrivate do
     expect(result.changed).to eq(%w[pdfkey])
   end
 
-  it "keeps going when one file fails, and reports it" do
-    allow(Cloudinary::Uploader).to receive(:rename)
-      .with("pdfkey", any_args).and_raise(CloudinaryException, "Resource not found - pdfkey")
+  context "when there's no public copy to switch" do
+    before do
+      allow(Cloudinary::Uploader).to receive(:rename)
+        .with("pdfkey", any_args).and_raise(CloudinaryException, "Resource not found - pdfkey")
+    end
 
-    result = described_class.call(apply: true, output: output)
+    # Re-running after a partial run (e.g. LIMIT=1) hits files it already switched.
+    it "reports files that are already authenticated, not as failures" do
+      allow(Cloudinary::Api).to receive(:resource)
+        .with("pdfkey", hash_including(type: "authenticated", resource_type: "image"))
+        .and_return({ "public_id" => "pdfkey" })
 
-    expect(result.changed).to eq(%w[txtkey.txt])
-    expect(result.failed).to eq([ [ "pdfkey", "Resource not found - pdfkey" ] ])
-    expect(output.string).to include("FAILED pdfkey")
+      result = described_class.call(apply: true, output: output)
+
+      expect(result.already_private).to eq(%w[pdfkey])
+      expect(result.failed).to be_empty
+      expect(result.changed).to eq(%w[txtkey.txt])
+      expect(output.string).to include("already private pdfkey")
+    end
+
+    it "keeps going when a file is missing entirely, and reports it" do
+      allow(Cloudinary::Api).to receive(:resource).and_raise(Cloudinary::Api::NotFound, "Resource not found")
+
+      result = described_class.call(apply: true, output: output)
+
+      expect(result.changed).to eq(%w[txtkey.txt])
+      expect(result.failed).to eq([ [ "pdfkey", "Resource not found - pdfkey" ] ])
+      expect(output.string).to include("FAILED pdfkey")
+    end
   end
 end
